@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\TransactionTypesEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->date('date');
             $table->unsignedBigInteger('amount');
             $table->uuid('author_id')->references('id')->on('users');
-            $table->enum('type', ['expense', 'income']);
+            $table->enum('type', TransactionTypesEnum::getValues());
             $table->string('concernable_type');
             $table->uuid('concernable_id');
             $table->uuid('parent_id')->nullable()->references('id')->on('transactions');
