@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ConfigAccessLevelsEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->string('key');
             $table->json('structure');
             $table->json('value');
-            $table->enum('access_level', ['public', 'private', 'admin']);
+            $table->enum('access_level', ConfigAccessLevelsEnum::getValues());
             $table->timestamps();
         });
     }
