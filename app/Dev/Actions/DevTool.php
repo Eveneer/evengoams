@@ -13,9 +13,6 @@ abstract class DevTool
 {
     use AsCommand, AsObject;
 
-    protected string $domain;
-    protected string $namespace;
-
     abstract function getCommandSignature(): string;
     abstract function getCommandDescription(): string;
     abstract public function runDevTool(mixed $params = null): void;
