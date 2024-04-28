@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Dev\Actions;
 
+use App\Dev\Enums\DomainFileTypesEnum;
 use App\Dev\Exceptions\InvalidParamsException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
@@ -35,10 +36,10 @@ class CreateDomain extends DevTool
         CreateFolder::run(['path' => $params['domain'] . '/Enums']);
 
         $files = [
-            ['type' => 'create', 'filename' => "Create$singularised_domain"],
-            ['type' => 'update', 'filename' => "Update$singularised_domain"],
-            ['type' => 'trash', 'filename' => "Trash$singularised_domain"],
-            ['type' => 'restore', 'filename' => "Restore$singularised_domain"],
+            ['type' => DomainFileTypesEnum::CREATE_ACTION, 'filename' => "Create$singularised_domain"],
+            ['type' => DomainFileTypesEnum::UPDATE_ACTION, 'filename' => "Update$singularised_domain"],
+            ['type' => DomainFileTypesEnum::TRASH_ACTION, 'filename' => "Trash$singularised_domain"],
+            ['type' => DomainFileTypesEnum::RESTORE_ACTION, 'filename' => "Restore$singularised_domain"],
         ];
         
         foreach ($files as $file)

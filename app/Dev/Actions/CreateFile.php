@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Dev\Actions;
 
+use App\Dev\Enums\DomainFileTypesEnum;
 use App\Dev\Exceptions\InvalidParamsException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
@@ -51,23 +52,26 @@ class CreateFile extends DevTool
     private function getFileContent(string $domain, string $type): string
     {
         switch ($type) {
-            case 'create':
+            case DomainFileTypesEnum::CREATE_ACTION:
                 return $this->getCreateActionContent($domain);
-            case 'update':
+            case DomainFileTypesEnum::UPDATE_ACTION:
                 return $this->getEditActionContent($domain);
-            case 'trash':
+            case DomainFileTypesEnum::TRASH_ACTION:
                 return $this->getTrashActionContent($domain);
-            case 'restore':
+            case DomainFileTypesEnum::RESTORE_ACTION:
                 return $this->getRestoreActionContent($domain);
-            case 'delete':
+            case DomainFileTypesEnum::DELETE_ACTION:
                 dd('not implemented yet');
                 // return $this->getCreateActionContent($domain);
-            case 'action':
+            case DomainFileTypesEnum::ACTION:
                 dd('not implemented yet');
                 // return $this->getCreateActionContent($domain);
-            case 'enum':
+            case DomainFileTypesEnum::ENUM:
                 dd('not implemented yet');
                 // return $this->getCreateActionContent($domain);
+            case DomainFileTypesEnum::MODEL:
+                    dd('not implemented yet');
+                    // return $this->getCreateActionContent($domain);
             default:
                 throw new InvalidParamsException();
         }
