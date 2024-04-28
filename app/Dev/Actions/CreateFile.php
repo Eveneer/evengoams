@@ -1,0 +1,307 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Dev\Actions;
+
+use App\Dev\Exceptions\InvalidParamsException;
+use Illuminate\Console\Command;
+use Illuminate\Support\Str;
+
+class CreateFile extends DevTool
+{
+    public function getCommandSignature(): string
+    {
+        return 'make:domain-file {domain} {type} {--filename=}';
+    }
+
+    public function getCommandDescription(): string
+    {
+        return 'Create a new file in the specified domain';
+    }
+
+    public function asCommand(Command $command): void
+    {
+        $this->handle([
+            'domain' => $command->argument('domain'),
+            'filename' => $command->argument('filename'),
+            'type' => $command->argument('type')
+        ]);
+    }
+
+    public function runDevTool(mixed $params = null): void
+    {
+        if (
+            !array_key_exists('domain', $params) ||
+            !array_key_exists('filename', $params) ||
+            !array_key_exists('type', $params)
+        )
+            throw new InvalidParamsException();
+        
+        $domain = Str::singular(ucfirst($params['domain']));
+        $pluralised_domain = Str::plural($domain);
+        $filename = $params['filename'];
+        $type = $params['type'];
+        $path = "app/Domains/$pluralised_domain/" . ($type === 'enum' ? 'Enums' : 'Actions');
+        $content = $this->getFileContent($domain, $type);
+
+        file_put_contents("$path/$filename.php", $content);
+    }
+
+    private function getFileContent(string $domain, string $type): string
+    {
+        switch ($type) {
+            case 'create':
+                return $this->getCreateActionContent($domain);
+            case 'update':
+                return $this->getEditActionContent($domain);
+            case 'trash':
+                return $this->getTrashActionContent($domain);
+            case 'restore':
+                return $this->getRestoreActionContent($domain);
+            case 'delete':
+                dd('not implemented yet');
+                // return $this->getCreateActionContent($domain);
+            case 'action':
+                dd('not implemented yet');
+                // return $this->getCreateActionContent($domain);
+            case 'enum':
+                dd('not implemented yet');
+                // return $this->getCreateActionContent($domain);
+            default:
+                throw new InvalidParamsException();
+        }
+    }
+
+    private function getCreateActionContent(string $domain)
+    {
+        $domain = ucfirst($domain);
+        $pluralised_domain = Str::plural($domain);
+        $var_name = Str::snake(strtolower($domain));
+
+        return "<?php
+
+declare(strict_types=1);
+
+namespace App\Domains\\$pluralised_domain\Actions;
+
+use App\Domains\\$pluralised_domain;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Request;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
+
+class Create$domain
+{
+    use AsAction;
+
+    public function authorize(ActionRequest \$request): Response
+    {
+        \$user = \$request->user();
+        
+        if (\$user->has_general_access)
+            return Response::allow();
+
+        return Response::deny('You are unauthorised to perform this action');
+    }
+
+    public function handle(array \$params): $domain
+    {
+        return $domain::create(\$params);
+    }
+
+    public function rules(): array
+    {
+        return [
+
+        ];
+    }
+
+    public function asController(Request \$request)
+    {
+        return \$this->handle(\$request->validated());
+    }
+
+    public function jsonResponse($domain \$$var_name, Request \$request): array
+    {
+        return [
+            'message' => '$domain created successfully',
+        ];
+    }
+}
+";
+    }
+
+    private function getEditActionContent(string $domain): string
+    {
+        $domain = ucfirst($domain);
+        $pluralised_domain = Str::plural($domain);
+        $var_name = Str::snake(strtolower($domain));
+
+        return "<?php
+
+declare(strict_types=1);
+
+namespace App\Domains\\$pluralised_domain\Actions;
+
+use App\Domains\\$pluralised_domain;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Request;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
+
+class Edit$domain
+{
+    use AsAction;
+
+    public function authorize(ActionRequest \$request): Response
+    {
+        \$user = \$request->user();
+        
+        if (\$user->has_general_access)
+            return Response::allow();
+
+        return Response::deny('You are unauthorised to perform this action');
+    }
+
+    public function handle($domain $var_name, array \$params): $domain
+    {
+        return $domain::update(\$params);
+    }
+
+    public function rules(): array
+    {
+        return [
+
+        ];
+    }
+
+    public function asController($domain $var_name, Request \$request)
+    {
+        return \$this->handle($var_name, \$request->validated());
+    }
+
+    public function jsonResponse($domain \$$var_name, Request \$request): array
+    {
+        return [
+            'message' => '$domain updated successfully',
+        ];
+    }
+}
+";
+    }
+
+    private function getTrashActionContent(string $domain): string
+    {
+        $domain = ucfirst($domain);
+        $pluralised_domain = Str::plural($domain);
+        $var_name = Str::snake(strtolower($domain));
+
+        return "<?php
+
+declare(strict_types=1);
+
+namespace App\Domains\\$pluralised_domain\Actions;
+
+use App\Models\\$domain;
+use Illuminate\Support\Facades\Response;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
+
+class Trash$domain
+{
+    use AsAction;
+
+    public function authorize(ActionRequest \$request): Response
+    {
+        \$user = \$request->user();
+        
+        if (\$user->has_general_access)
+            return Response::allow();
+
+        return Response::deny('You are unauthorised to perform this action');
+    }
+
+    public function handle($domain \$$var_name): bool
+    {
+        return \${$var_name}->delete();
+    }
+
+    public function asController($domain \$$var_name)
+    {
+        return \$this->handle(\$$var_name);
+    }
+
+    public function jsonResponse(bool \$deleted): array
+    {
+        \$success = \$deleted ? 'successful' : 'unsuccessful';
+
+        return [
+            'message' => \"$domain delete \$success\",
+        ];
+    }
+}
+";
+    }
+
+    private function getRestoreActionContent(string $domain)
+    {
+        $domain = ucfirst($domain);
+        $pluralised_domain = Str::plural($domain);
+        $var_name = Str::snake(strtolower($domain));
+
+        return "<?php
+
+declare(strict_types=1);
+
+namespace App\Domains\\$pluralised_domain\Actions;
+
+use App\Models\\$domain;
+use Illuminate\Support\Facades\Response;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
+
+class Restore$domain
+{
+    use AsAction;
+
+    public function authorize(ActionRequest \$request): Response
+    {
+        \$user = \$request->user();
+        
+        if (\$user->has_general_access)
+            return Response::allow();
+
+        return Response::deny('You are unauthorised to perform this action');
+    }
+
+    public function handle(array \$params): User
+    {
+        \$$var_name = User::withTrashed()->where('id', \$params['id'])->first();
+        \${$var_name}->restore();
+
+        return \$$var_name;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'id' => ['exists:']
+        ];
+    }
+
+    public function asController(Request \$request)
+    {
+        return $\this->handle(\$request->validated());
+    }
+
+    public function jsonResponse($domain \$$var_name, Request \$request): array
+    {
+        return [
+            'message' => 'User restored successfully',c
+        ];
+    }
+}
+";
+    }
+}
