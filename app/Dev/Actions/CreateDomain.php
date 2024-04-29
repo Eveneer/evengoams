@@ -36,10 +36,11 @@ class CreateDomain extends DevTool
         CreateFolder::run(['path' => $params['domain'] . '/Enums']);
 
         $files = [
-            ['type' => DomainFileTypesEnum::CREATE_ACTION, 'filename' => "Create$singularised_domain"],
-            ['type' => DomainFileTypesEnum::UPDATE_ACTION, 'filename' => "Update$singularised_domain"],
-            ['type' => DomainFileTypesEnum::TRASH_ACTION, 'filename' => "Trash$singularised_domain"],
-            ['type' => DomainFileTypesEnum::RESTORE_ACTION, 'filename' => "Restore$singularised_domain"],
+            ['type' => DomainFileTypesEnum::CREATE_ACTION, 'filename' => "Create$singularised_domain.php"],
+            ['type' => DomainFileTypesEnum::UPDATE_ACTION, 'filename' => "Update$singularised_domain.php"],
+            ['type' => DomainFileTypesEnum::TRASH_ACTION, 'filename' => "Trash$singularised_domain.php"],
+            ['type' => DomainFileTypesEnum::RESTORE_ACTION, 'filename' => "Restore$singularised_domain.php"],
+            ['type' => DomainFileTypesEnum::MODEL, 'filename' => "$singularised_domain.php"],
         ];
         
         foreach ($files as $file)
