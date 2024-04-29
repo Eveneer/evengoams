@@ -43,10 +43,19 @@ class CreateFile extends DevTool
         $pluralised_domain = Str::plural($domain);
         $filename = $params['filename'];
         $type = $params['type'];
-        $path = "app/Domains/$pluralised_domain/" . ($type === 'enum' ? 'Enums' : 'Actions');
+        $path = "app/Domains/$pluralised_domain";
+
+        if ($type === DomainFileTypesEnum::MODEL) {
+            $path .= '';
+        } elseif ($type === DomainFileTypesEnum::ENUM) {
+            $path .= '/Enums';
+        } else {
+            $path .= '/Actions';
+        }
+
         $content = $this->getFileContent($domain, $type);
 
-        file_put_contents("$path/$filename.php", $content);
+        file_put_contents("$path/$filename", $content);
     }
 
     private function getFileContent(string $domain, string $type): string
@@ -70,8 +79,7 @@ class CreateFile extends DevTool
                 dd('not implemented yet');
                 // return $this->getCreateActionContent($domain);
             case DomainFileTypesEnum::MODEL:
-                    dd('not implemented yet');
-                    // return $this->getCreateActionContent($domain);
+                return $this->getModelContent($domain);
             default:
                 throw new InvalidParamsException();
         }
@@ -89,7 +97,7 @@ declare(strict_types=1);
 
 namespace App\Domains\\$pluralised_domain\Actions;
 
-use App\Domains\\$pluralised_domain;
+use App\Domains\\$pluralised_domain\\$domain;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -148,7 +156,7 @@ declare(strict_types=1);
 
 namespace App\Domains\\$pluralised_domain\Actions;
 
-use App\Domains\\$pluralised_domain;
+use App\Domains\\$pluralised_domain\\$domain;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -168,9 +176,10 @@ class Edit$domain
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle($domain $var_name, array \$params): $domain
+    public function handle($domain \$$var_name, array \$params): $domain
     {
-        return $domain::update(\$params);
+        \${$var_name}->update(\$params);
+        return \$$var_name;
     }
 
     public function rules(): array
@@ -180,9 +189,9 @@ class Edit$domain
         ];
     }
 
-    public function asController($domain $var_name, Request \$request)
+    public function asController($domain \$$var_name, Request \$request)
     {
-        return \$this->handle($var_name, \$request->validated());
+        return \$this->handle(\$$var_name, \$request->validated());
     }
 
     public function jsonResponse($domain \$$var_name, Request \$request): array
@@ -207,7 +216,7 @@ declare(strict_types=1);
 
 namespace App\Domains\\$pluralised_domain\Actions;
 
-use App\Models\\$domain;
+use App\Domains\\$pluralised_domain\\$domain;
 use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -260,8 +269,9 @@ declare(strict_types=1);
 
 namespace App\Domains\\$pluralised_domain\Actions;
 
-use App\Models\\$domain;
+use App\Domains\\$pluralised_domain\\$domain;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -279,9 +289,9 @@ class Restore$domain
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array \$params): User
+    public function handle(array \$params): $domain
     {
-        \$$var_name = User::withTrashed()->where('id', \$params['id'])->first();
+        \$$var_name = $domain::withTrashed()->where('id', \$params['id'])->first();
         \${$var_name}->restore();
 
         return \$$var_name;
@@ -296,15 +306,35 @@ class Restore$domain
 
     public function asController(Request \$request)
     {
-        return $\this->handle(\$request->validated());
+        return \$this->handle(\$request->validated());
     }
 
     public function jsonResponse($domain \$$var_name, Request \$request): array
     {
         return [
-            'message' => 'User restored successfully',c
+            'message' => '$domain restored successfully',
         ];
     }
+}
+";
+    }
+
+    private function getModelContent(string $domain)
+    {
+        $domain = ucfirst($domain);
+        $pluralised_domain = Str::plural($domain);
+
+        return "<?php
+
+namespace App\Domains\\$pluralised_domain;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class $domain extends Model
+{
+    use HasFactory, HasUuids;
 }
 ";
     }
