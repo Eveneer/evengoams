@@ -18,8 +18,13 @@ return new class extends Migration
             $table->unsignedBigInteger('amount');
             $table->uuid('author_id')->references('id')->on('users');
             $table->enum('type', TransactionTypesEnum::getValues());
-            $table->string('concernable_type');
-            $table->uuid('concernable_id');
+            
+            $table->string('fromable_type'); // RevenueStream, Donor or Account
+            $table->uuid('fromable_id');
+
+            $table->string('toable_type'); // Employee, Vendor or Account
+            $table->uuid('toable_id');
+
             $table->uuid('parent_id')->nullable()->references('id')->on('transactions');
             $table->string('note')->nullable();
             $table->json('tag_ids')->nullable();
