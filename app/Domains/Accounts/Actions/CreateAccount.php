@@ -32,7 +32,6 @@ class CreateAccount
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid'],
             'name' => ['required', 'string', 'max:255'],
             'balance' => ['required', 'integer', 'min:0'],
             'type' => ['required', 'string'],
