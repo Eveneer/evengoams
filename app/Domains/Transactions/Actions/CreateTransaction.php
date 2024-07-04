@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Domains\Transactions\Enums\TransactionTypesEnum;
 
 class CreateTransaction
 {
@@ -32,7 +33,18 @@ class CreateTransaction
     public function rules(): array
     {
         return [
-
+            'date' => ['required', 'date'],
+            'amount' => ['required', 'integer', 'min:0'],
+            'author_id' => ['required', 'exists:users,id'],
+            'type' => ['required', 'in:' . implode(',', TransactionTypesEnum::asArray())],
+            'fromable_type' => ['required', 'string'],
+            'fromable_id' => ['required', 'uuid'],
+            'toable_type' => ['required', 'string'],
+            'toable_id' => ['required', 'uuid'],
+            'parent_id' => ['nullable', 'exists:transactions,id'],
+            'note' => ['nullable', 'string'],
+            'tag_ids' => ['nullable', 'json'],
+            'is_last' => ['required', 'boolean']
         ];
     }
 

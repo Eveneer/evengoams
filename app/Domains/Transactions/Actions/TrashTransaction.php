@@ -41,4 +41,11 @@ class TrashTransaction
             'message' => "Transaction delete $success",
         ];
     }
+
+    public function rules(): array
+    {
+        return [
+            'transaction_id' => ['required', 'exists:transactions,id'],
+        ];
+    }
 }
