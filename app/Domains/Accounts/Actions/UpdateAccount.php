@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Domains\Accounts\Enums\AccountTypesEnum;
 
 class EditAccount
 {
@@ -36,7 +37,7 @@ class EditAccount
             'id' => ['required', 'exists:accounts,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'balance' => ['sometimes', 'integer', 'min:0'],
-            'type' => ['sometimes', 'in:' . implode(',', [AccountTypesEnum::CASH, AccountTypesEnum::BANK, AccountTypesEnum::MOBILE])],
+            'type' => ['sometimes', 'in:' . implode(',', AccountTypesEnum::asArray())],
             'details' => ['sometimes', 'json'],
         ];
     }

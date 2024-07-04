@@ -41,4 +41,11 @@ class TrashAccount
             'message' => "Account delete $success",
         ];
     }
+
+    public function rules(): array
+    {
+        return [
+            'account_id' => ['required', 'exists:accounts,id'],
+        ];
+    }
 }

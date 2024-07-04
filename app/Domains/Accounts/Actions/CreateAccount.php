@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Domains\Accounts\Enums\AccountTypesEnum;
 
 class CreateAccount
 {
@@ -34,7 +35,7 @@ class CreateAccount
         return [
             'name' => ['required', 'string', 'max:255'],
             'balance' => ['required', 'integer', 'min:0'],
-            'type' => ['required', 'in:' . implode(',', [AccountTypesEnum::CASH, AccountTypesEnum::BANK, AccountTypesEnum::MOBILE])],
+            'type' => ['required', 'in:' . implode(',', AccountTypesEnum::asArray())],
             'details' => ['required', 'json'],
         ];
     }
