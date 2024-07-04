@@ -35,7 +35,7 @@ class RestoreAccount
     public function rules(): array
     {
         return [
-            'id' => ['required', 'exists:accounts,id', 'uuid']
+            'id' => ['required', 'exists:accounts,id']
         ];
     }
 
