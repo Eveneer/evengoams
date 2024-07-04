@@ -36,7 +36,7 @@ class EditAccount
             'id' => ['required', 'exists:accounts,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'balance' => ['sometimes', 'integer', 'min:0'],
-            'type' => ['sometimes', 'string'],
+            'type' => ['sometimes', 'in:' . implode(',', [AccountTypesEnum::CASH, AccountTypesEnum::BANK, AccountTypesEnum::MOBILE])],
             'details' => ['sometimes', 'json'],
         ];
     }
