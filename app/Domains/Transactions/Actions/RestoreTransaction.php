@@ -35,7 +35,7 @@ class RestoreTransaction
     public function rules(): array
     {
         return [
-            'id' => ['exists:']
+            'id' => ['required', 'exists:transactions,id']
         ];
     }
 
