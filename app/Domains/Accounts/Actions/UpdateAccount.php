@@ -33,7 +33,7 @@ class EditAccount
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid'],
+            'id' => ['required', 'exists:accounts,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'balance' => ['sometimes', 'integer', 'min:0'],
             'type' => ['sometimes', 'string'],
