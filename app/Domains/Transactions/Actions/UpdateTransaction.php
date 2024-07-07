@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Transactions\Actions;
 
 use App\Domains\Transactions\Transaction;
+use App\Domains\Transactions\Enums\TransactionTypesEnum;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -33,7 +34,19 @@ class EditTransaction
     public function rules(): array
     {
         return [
-
+            'id' => ['required', 'exists:transactions,id'],
+            'date' => ['sometimes', 'date'],
+            'amount' => ['sometimes', 'integer', 'min:0'],
+            'author_id' => ['sometimes', 'exists:users,id'],
+            'type' => ['sometimes', 'in:' . implode(',', TransactionTypesEnum::asArray())],
+            'fromable_type' => ['sometimes', 'string'],
+            'fromable_id' => ['sometimes', 'uuid'],
+            'toable_type' => ['sometimes', 'string'],
+            'toable_id' => ['sometimes', 'uuid'],
+            'parent_id' => ['nullable', 'uuid', 'exists:transactions,id'],
+            'note' => ['nullable', 'string'],
+            'tag_ids' => ['nullable', 'json'],
+            'is_last' => ['sometimes', 'boolean']
         ];
     }
 
