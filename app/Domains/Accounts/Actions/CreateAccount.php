@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Accounts\Actions;
 
 use App\Domains\Accounts\Account;
+use App\Domains\Accounts\Enums\AccountTypesEnum;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,7 +33,10 @@ class CreateAccount
     public function rules(): array
     {
         return [
-
+            'name' => ['required', 'string', 'max:255'],
+            'balance' => ['required', 'integer', 'min:0'],
+            'type' => ['sometimes', 'in:' . implode(',', AccountTypesEnum::asArray())],
+            'details' => ['required', 'json'],
         ];
     }
 
