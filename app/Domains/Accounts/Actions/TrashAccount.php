@@ -45,7 +45,7 @@ class TrashAccount
     public function rules(): array
     {
         return [
-            'account_id' => ['required', 'exists:accounts,id'],
+            'id' => ['required', 'exists:accounts,id'],
         ];
     }
 }
