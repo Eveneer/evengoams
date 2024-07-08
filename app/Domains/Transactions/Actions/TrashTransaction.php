@@ -28,6 +28,14 @@ class TrashTransaction
         return $transaction->delete();
     }
 
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:transactions,id'],
+        ];
+    }
+
+
     public function asController(Transaction $transaction)
     {
         return $this->handle($transaction);
