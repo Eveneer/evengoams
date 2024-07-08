@@ -32,7 +32,13 @@ class CreateDonor
     public function rules(): array
     {
         return [
-
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'phone' => ['nullable', 'json'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'occupation' => ['nullable', 'string', 'max:255'],
+            'title' => ['nullable', 'string', 'max:255'],
+            'company' => ['nullable', 'string', 'max:255'],
         ];
     }
 
