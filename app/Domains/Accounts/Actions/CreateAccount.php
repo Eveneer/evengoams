@@ -35,7 +35,7 @@ class CreateAccount
         return [
             'name' => ['required', 'string', 'max:255'],
             'balance' => ['required', 'integer', 'min:0'],
-            'type' => ['sometimes', 'in:' . implode(',', AccountTypesEnum::asArray())],
+            'type' => ['required', 'in:' . implode(',', AccountTypesEnum::asArray())],
             'details' => ['required', 'json'],
         ];
     }
