@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Tags\Actions;
 
 use App\Domains\Tags\Tag;
+use App\Domains\Tags\Enums\TagModelsEnum;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,7 +33,9 @@ class CreateTag
     public function rules(): array
     {
         return [
-
+            'name' => ['required', 'string', 'max:255'],
+            'key' => ['required', 'string', 'max:255', 'unique:tags,key'],
+            'model' => ['required', 'in:' . implode(',', TagModelsEnum::asArray())],
         ];
     }
 
