@@ -35,7 +35,7 @@ class RestorePledge
     public function rules(): array
     {
         return [
-            'id' => ['exists:']
+            'id' => ['required', 'exists:pledges,id'],
         ];
     }
 
