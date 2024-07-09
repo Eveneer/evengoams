@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Tags\Actions;
 
 use App\Domains\Tags\Tag;
+use App\Domains\Tags\Enums\TagModelsEnum;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -33,7 +34,10 @@ class EditTag
     public function rules(): array
     {
         return [
-
+            'id' => ['required', 'uuid'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'key' => ['sometimes', 'string', 'max:255', 'unique:tags,key,' . request()->route('tag')->id],
+            'model' => ['required', 'in:' . implode(',', TagModelsEnum::asArray())],
         ];
     }
 
