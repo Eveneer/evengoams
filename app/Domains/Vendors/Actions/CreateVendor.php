@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Vendors\Actions;
 
 use App\Domains\Vendors\Vendor;
+use App\Domains\Vendors\Enums\VendorTypesEnum;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,7 +33,12 @@ class CreateVendor
     public function rules(): array
     {
         return [
-
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'in:' . implode(',', VendorTypesEnum::asArray())],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['uuid'],
+            'contacts' => ['nullable', 'array'],
+            'contacts.*' => ['string', 'max:255'],
         ];
     }
 
