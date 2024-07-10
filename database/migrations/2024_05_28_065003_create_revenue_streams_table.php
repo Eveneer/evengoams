@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('revenue_streams', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->decimal('target_amount', 15, 2)->nullable();
             $table->timestamps();
         });
     }
