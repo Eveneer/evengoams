@@ -33,7 +33,7 @@ class EditDonor
     public function rules(): array
     {
         return [
-            'id' => ['required', 'exists:accounts,id'],
+            'id' => ['required', 'exists:donors,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'nullable', 'string', 'email', 'max:255'],
             'phone' => ['sometimes', 'nullable', 'json'],
