@@ -34,7 +34,7 @@ class EditVendor
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid'],
+            'id' => ['required', 'exists:vendors,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'type' => ['sometimes', 'in:' . implode(',', VendorTypesEnum::asArray())],
             'tag_ids' => ['nullable', 'array'],
