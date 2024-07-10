@@ -34,7 +34,7 @@ class EditTransaction
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid'],
+            'id' => ['required', 'exists:transactions,id'],
             'date' => ['sometimes', 'date'],
             'amount' => ['sometimes', 'integer', 'min:0'],
             'author_id' => ['sometimes', 'exists:users,id'],
