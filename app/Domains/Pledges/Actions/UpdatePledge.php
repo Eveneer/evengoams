@@ -34,7 +34,7 @@ class EditPledge
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid'],
+            'id' => ['required', 'exists:pledges,id'],
             'donor_id' => ['sometimes', 'exists:donors,id'],
             'amount' => ['sometimes', 'nullable', 'integer', 'min:0'],
             'recurs' => ['sometimes', 'in:' . implode(',', PledgeRecursEnum::asArray())],
