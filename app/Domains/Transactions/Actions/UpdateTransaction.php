@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace App\Domains\Transactions\Actions;
 
+use App\Domains\Accounts\Account;
+use App\Domains\Donors\Donor;
+use App\Domains\Employees\Employee;
+use App\Domains\RevenueStreams\RevenueStream;
 use App\Domains\Transactions\Transaction;
 use App\Domains\Transactions\Enums\TransactionTypesEnum;
+use App\Domains\Vendors\Vendor;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -39,15 +45,33 @@ class EditTransaction
             'amount' => ['sometimes', 'integer', 'min:0'],
             'author_id' => ['sometimes', 'exists:users,id'],
             'type' => ['sometimes', 'in:' . implode(',', TransactionTypesEnum::asArray())],
-            'fromable_type' => ['sometimes', 'string', 'in:RevenueStream,Donor,Account'],
+            'fromable_type' => [
+                'sometimes',
+                'in:' . implode(',', [Account::class, Donor::class, RevenueStream::class])
+            ],
             'fromable_id' => ['sometimes', 'uuid'],
-            'toable_type' => ['sometimes', 'string', 'in:Employee,Vendor,Account'],
+            'toable_type' => [
+                'sometimes',
+                'in:' . implode(',', [Account::class, Employee::class, Vendor::class])
+            ],
             'toable_id' => ['sometimes', 'uuid'],
             'parent_id' => ['sometimes', 'nullable', 'uuid', 'exists:transactions,id'],
             'note' => ['sometimes', 'nullable', 'string'],
             'tag_ids' => ['sometimes', 'nullable', 'json'],
             'is_last' => ['sometimes', 'boolean'],
         ];
+    }
+
+    public function afterValidator(Validator $validator, ActionRequest $request): void
+    {
+        $fromable = $request->fromable_type;
+        $toable = $request->toable_type;
+
+        if ($fromable::find($request->fromable_id) === null)
+            $validator->errors()->add('fromable_id', 'Invalid fromable selected');
+
+        if ($toable::find($request->toable_id) === null)
+            $validator->errors()->add('toable_id', 'Invalid toable selected');
     }
 
     public function asController(Transaction $transaction, Request $request)
