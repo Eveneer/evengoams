@@ -34,7 +34,7 @@ class EditTag
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid'],
+            'id' => ['required', 'exists:tags,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'key' => ['sometimes', 'string', 'max:255', 'unique:tags,key,' . request()->route('tag')->id],
             'model' => ['required', 'in:' . implode(',', TagModelsEnum::asArray())],
