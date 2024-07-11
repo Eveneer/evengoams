@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('revenue_streams', function (Blueprint $table) {
+        Schema::create('revenue_stream_types', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->uuid('type_id')->references('id')->on('revenue_stream_types');
-            $table->json('values');
+            $table->string('description');
+            $table->json('properties');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('revenue_streams');
+        Schema::dropIfExists('revenue_stream_types');
     }
 };
