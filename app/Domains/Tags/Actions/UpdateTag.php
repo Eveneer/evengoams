@@ -31,12 +31,23 @@ class EditTag
         return $tag;
     }
 
+    public function prepareForValidation(ActionRequest $request): void
+    {
+        $key = $request->name;
+        
+        // remove multiple spaces
+        // convert spaces to dashes
+        // lowercase the key
+
+        $request->merge(['key' => $key]);
+    }
+
     public function rules(): array
     {
         return [
             'id' => ['required', 'exists:tags,id'],
             'name' => ['sometimes', 'string', 'max:255'],
-            'key' => ['sometimes', 'string', 'max:255', 'unique:tags,key,' . request()->route('tag')->id],
+            'key' => ['required', 'string', 'max:255', 'unique:tags,key,' . request()->route('tag')->id],
             'model' => ['required', 'in:' . implode(',', TagModelsEnum::asArray())],
         ];
     }

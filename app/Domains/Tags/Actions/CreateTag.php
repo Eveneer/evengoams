@@ -30,6 +30,17 @@ class CreateTag
         return Tag::create($params);
     }
 
+    public function prepareForValidation(ActionRequest $request): void
+    {
+        $key = $request->name;
+        
+        // remove multiple spaces
+        // convert spaces to dashes
+        // lowercase the key
+
+        $request->merge(['key' => $key]);
+    }
+
     public function rules(): array
     {
         return [
