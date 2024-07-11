@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Pledges\Actions;
 
 use App\Domains\Pledges\Pledge;
+use App\Domains\Pledges\Enums\PledgeRecursEnum;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,7 +33,10 @@ class CreatePledge
     public function rules(): array
     {
         return [
-
+            'donor_id' => ['required', 'exists:donors,id'],
+            'amount' => ['nullable', 'integer', 'min:0'],
+            'recurs' => ['required', 'in:' . implode(',', PledgeRecursEnum::asArray())],
+            'due_date' => ['nullable', 'date'],
         ];
     }
 
