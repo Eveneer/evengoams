@@ -28,6 +28,13 @@ class TrashPledge
         return $pledge->delete();
     }
 
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:pledges,id'],
+        ];
+    }
+
     public function asController(Pledge $pledge)
     {
         return $this->handle($pledge);
