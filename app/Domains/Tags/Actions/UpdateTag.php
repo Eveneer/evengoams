@@ -36,8 +36,11 @@ class EditTag
         $key = $request->name;
         
         // remove multiple spaces
+        $key = preg_replace('/\s+/', ' ', $key);
         // convert spaces to dashes
+        $key = str_replace(' ', '-', $key);
         // lowercase the key
+        $key = strtolower($key);
 
         $request->merge(['key' => $key]);
     }
