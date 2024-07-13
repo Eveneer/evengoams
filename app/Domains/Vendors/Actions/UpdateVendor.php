@@ -38,9 +38,11 @@ class EditVendor
             'name' => ['sometimes', 'string', 'max:255'],
             'type' => ['sometimes', 'in:' . implode(',', VendorTypesEnum::asArray())],
             'tag_ids' => ['nullable', 'array'],
-            'tag_ids.*' => ['uuid'],
+            'tag_ids.*' => ['exists:tags,id'],
             'contacts' => ['nullable', 'array'],
-            'contacts.*' => ['string', 'max:255'],
+            'contacts.*.name' => ['nullable', 'string'],
+            'contacts.*.phone' => ['nullable', 'string'],
+            'contacts.*.email' => ['nullable', 'email'],
         ];
     }
 
