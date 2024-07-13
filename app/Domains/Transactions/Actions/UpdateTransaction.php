@@ -46,16 +46,16 @@ class EditTransaction
             'author_id' => ['sometimes', 'exists:users,id'],
             'type' => ['sometimes', 'in:' . implode(',', TransactionTypesEnum::asArray())],
             'fromable_type' => [
-                'sometimes',
+                'required',
                 'in:' . implode(',', [Account::class, Donor::class, RevenueStream::class])
             ],
-            'fromable_id' => ['sometimes', 'uuid'],
+            'fromable_id' => ['required', 'uuid'],
             'toable_type' => [
-                'sometimes',
+                'required',
                 'in:' . implode(',', [Account::class, Employee::class, Vendor::class])
             ],
-            'toable_id' => ['sometimes', 'uuid'],
-            'parent_id' => ['sometimes', 'nullable', 'uuid', 'exists:transactions,id'],
+            'toable_id' => ['required', 'uuid'],
+            'parent_id' => ['sometimes', 'nullable', 'exists:transactions,id'],
             'note' => ['sometimes', 'nullable', 'string'],
             'tag_ids' => ['sometimes', 'nullable', 'json'],
             'is_last' => ['sometimes', 'boolean'],
