@@ -9,6 +9,7 @@ use App\Domains\Transactions\Transaction;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -56,7 +57,7 @@ class User extends Authenticatable
         return $this->is_active && ($this->type === UserTypesEnum::ADMIN || $this->type === UserTypesEnum::ORG_MEMBER);
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class, 'author_id');
     }
