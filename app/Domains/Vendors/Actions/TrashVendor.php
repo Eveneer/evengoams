@@ -28,6 +28,13 @@ class TrashVendor
         return $vendor->delete();
     }
 
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:vendors,id']
+        ];
+    }
+
     public function asController(Vendor $vendor)
     {
         return $this->handle($vendor);

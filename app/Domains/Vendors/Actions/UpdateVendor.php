@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Vendors\Actions;
 
 use App\Domains\Vendors\Vendor;
+use App\Domains\Vendors\Enums\VendorTypesEnum;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -33,7 +34,15 @@ class EditVendor
     public function rules(): array
     {
         return [
-
+            'id' => ['required', 'exists:vendors,id'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'type' => ['sometimes', 'in:' . implode(',', VendorTypesEnum::asArray())],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
+            'contacts' => ['nullable', 'array'],
+            'contacts.*.name' => ['nullable', 'string'],
+            'contacts.*.phone' => ['nullable', 'string'],
+            'contacts.*.email' => ['nullable', 'email'],
         ];
     }
 
