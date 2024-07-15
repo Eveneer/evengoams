@@ -4,11 +4,12 @@ namespace App\Domains\Users;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Enums\UserTypesEnum;
+use App\Domains\Users\Enums\UserTypesEnum;
+use App\Domains\Transactions\Transaction;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -23,6 +24,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'type',
+        'is_active',
     ];
 
     /**
@@ -51,5 +54,10 @@ class User extends Authenticatable
     public function getHasGeneralAccessAttribute(): bool
     {
         return $this->is_active && ($this->type === UserTypesEnum::ADMIN || $this->type === UserTypesEnum::ORG_MEMBER);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'author_id');
     }
 }
