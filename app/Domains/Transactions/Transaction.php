@@ -6,6 +6,9 @@ use App\Domains\Users\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Transaction extends Model
 {
@@ -30,28 +33,28 @@ class Transaction extends Model
         'tag_ids' => 'array',
     ];
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    public function fromable()
+    public function from(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function toable()
+    public function to(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
-    public function children()
+    public function child(): HasOne
     {
-        return $this->hasMany(self::class, 'parent_id');
+        return $this->hasOne(self::class, 'parent_id');
     }
 }
