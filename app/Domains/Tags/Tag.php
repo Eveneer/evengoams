@@ -2,6 +2,7 @@
 
 namespace App\Domains\Tags;
 
+use App\Domains\Vendors\Vendor;
 use App\Domains\Transactions\Transaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -25,5 +26,10 @@ class Tag extends Model
     public function transactions()
     {
         return $this->morphedByMany(Transaction::class, 'taggable');
+    }
+
+    public function vendors()
+    {
+        return $this->morphedByMany(Vendor::class, 'taggable');
     }
 }
