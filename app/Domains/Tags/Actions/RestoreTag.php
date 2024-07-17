@@ -35,7 +35,7 @@ class RestoreTag
     public function rules(): array
     {
         return [
-            'id' => ['exists:']
+            'id' => ['required', 'exists:tags,id']
         ];
     }
 

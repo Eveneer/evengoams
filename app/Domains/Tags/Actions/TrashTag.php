@@ -28,6 +28,13 @@ class TrashTag
         return $tag->delete();
     }
 
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:tags,id'],
+        ];
+    }
+
     public function asController(Tag $tag)
     {
         return $this->handle($tag);

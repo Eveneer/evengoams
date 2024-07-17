@@ -28,6 +28,13 @@ class TrashDonor
         return $donor->delete();
     }
 
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:donors,id'],
+        ];
+    }
+
     public function asController(Donor $donor)
     {
         return $this->handle($donor);

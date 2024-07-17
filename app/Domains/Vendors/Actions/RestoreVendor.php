@@ -35,7 +35,7 @@ class RestoreVendor
     public function rules(): array
     {
         return [
-            'id' => ['exists:']
+            'id' => ['required', 'exists:vendors,id']
         ];
     }
 
