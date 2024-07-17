@@ -2,13 +2,12 @@
 
 namespace App\Domains\Tags;
 
-use App\Domains\Vendors\Vendor;
 use Illuminate\Database\Eloquent\Model;
-use App\Domains\Transactions\Transaction;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 class Tag extends Model
 {
@@ -25,13 +24,15 @@ class Tag extends Model
         return $this->morphTo();
     }
 
-    public function transactions(): MorphToMany
+    public function transactions(): Builder
     {
-        return $this->morphedByMany(Transaction::class, 'taggable');
+        return DB::table('transaction')
+            ->where('tag_ids', 'LIKE', "%$this->id%");
     }
 
-    public function vendors(): MorphToMany
+    public function vendors(): Builder
     {
-        return $this->morphedByMany(Vendor::class, 'taggable');
+        return DB::table('vendor')
+            ->where('tag_ids', 'LIKE', "%$this->id%");
     }
 }
