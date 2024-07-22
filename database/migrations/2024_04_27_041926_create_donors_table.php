@@ -17,9 +17,8 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->string('occupation')->nullable();
-            $table->string('title')->nullable();
-            $table->string('company')->nullable();
+            $table->boolean('is_individual');
+            $table->json('details');
             $table->timestamps();
         });
     }

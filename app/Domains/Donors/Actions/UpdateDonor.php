@@ -34,13 +34,12 @@ class EditDonor
     {
         return [
             'id' => ['required', 'exists:donors,id'],
-            'name' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'nullable', 'string', 'email', 'max:255'],
-            'phone' => ['sometimes', 'nullable', 'string'],
-            'address' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'occupation' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'title' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'company' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'phone' => ['nullable', 'string'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'is_individual' => ['required', 'boolean'],
+            'details' => ['required', 'json'],
         ];
     }
 

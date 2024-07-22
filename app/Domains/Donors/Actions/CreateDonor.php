@@ -36,9 +36,8 @@ class CreateDonor
             'email' => ['nullable', 'string', 'email', 'max:255'],
             'phone' => ['nullable', 'string'],
             'address' => ['nullable', 'string', 'max:255'],
-            'occupation' => ['nullable', 'string', 'max:255'],
-            'title' => ['nullable', 'string', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
+            'is_individual' => ['required', 'boolean'],
+            'details' => ['required', 'json'],
         ];
     }
 
