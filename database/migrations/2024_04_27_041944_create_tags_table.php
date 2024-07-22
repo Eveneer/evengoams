@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('key');
-            $table->enum('model', TagModelsEnum::getValues());
+            $table->string('model');
             $table->timestamps();
         });
     }

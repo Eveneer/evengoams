@@ -27,7 +27,14 @@ class CreateTag
 
     public function handle(array $params): Tag
     {
-        return Tag::create($params);
+        $tag = Tag::exists($params['name'], $params['model']);
+
+        if ($tag === false) {
+            $params['key'] = Tag::constructKey($params['name']);
+            $tag = Tag::create($params);
+        }
+
+        return $tag;
     }
 
     public function prepareForValidation(ActionRequest $request): void
