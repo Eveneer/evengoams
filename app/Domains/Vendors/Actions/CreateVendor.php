@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domains\Vendors\Actions;
 
+use App\Domains\Tags\Actions\CreateTags;
+use App\Domains\Tags\Enums\TagModelsEnum;
 use App\Domains\Vendors\Vendor;
 use App\Domains\Vendors\Enums\VendorTypesEnum;
 use Illuminate\Support\Facades\Response;
@@ -27,6 +29,8 @@ class CreateVendor
 
     public function handle(array $params): Vendor
     {
+        $params['tag_ids'] = CreateTags::run($params['tag_ids'], TagModelsEnum::VENDOR);
+
         return Vendor::create($params);
     }
 
@@ -35,8 +39,7 @@ class CreateVendor
         return [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'in:' . implode(',', VendorTypesEnum::asArray())],
-            'tag_ids' => ['nullable', 'array'],
-            'tag_ids.*' => ['exists:tags,id'],
+            'tag_ids' => ['required', 'array'],
             'contacts' => ['nullable', 'array'],
             'contacts.*.name' => ['nullable', 'string'],
             'contacts.*.phone' => ['nullable', 'string'],
