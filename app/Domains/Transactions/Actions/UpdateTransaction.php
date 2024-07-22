@@ -44,7 +44,7 @@ class EditTransaction
             'date' => ['sometimes', 'date'],
             'amount' => ['sometimes', 'integer', 'min:0'],
             'author_id' => ['sometimes', 'exists:users,id'],
-            'type' => ['sometimes', 'in:' . implode(',', TransactionTypesEnum::asArray())],
+            'type' => ['sometimes', 'in:' . implode(',', TransactionTypesEnum::getValues())],
             'fromable_type' => [
                 'required',
                 'in:' . implode(',', [Account::class, Donor::class, RevenueStream::class])

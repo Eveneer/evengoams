@@ -42,7 +42,7 @@ class CreateTransaction
             'date' => ['required', 'date'],
             'amount' => ['required', 'integer', 'min:0'],
             'author_id' => ['required', 'exists:users,id'],
-            'type' => ['required', 'in:' . implode(',', TransactionTypesEnum::asArray())],
+            'type' => ['required', 'in:' . implode(',', TransactionTypesEnum::getValues())],
             'fromable_type' => [
                 'required',
                 'in:' . implode(',', [Account::class, Donor::class, RevenueStream::class])
