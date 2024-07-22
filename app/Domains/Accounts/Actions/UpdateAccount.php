@@ -37,7 +37,7 @@ class EditAccount
             'id' => ['required', 'exists:accounts,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'balance' => ['sometimes', 'integer', 'min:0'],
-            'type' => ['sometimes', 'in:' . implode(',', AccountTypesEnum::asArray())],
+            'type' => ['sometimes', 'in:' . implode(',', AccountTypesEnum::getValues())],
             'details' => ['sometimes', 'json'],
         ];
     }
