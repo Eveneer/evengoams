@@ -1,6 +1,5 @@
 <?php
 
-use App\Domains\Vendors\Enums\VendorTypesEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vendors', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name');
-            $table->enum('type', VendorTypesEnum::getValues());
-            $table->json('contacts')->nullable();
+        Schema::create('tag_transaction', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('transaction_id')->references('id')->on('transactions');
+            $table->uuid('tag_id')->references('id')->on('tags');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vendors');
+        Schema::dropIfExists('tag_transaction');
     }
 };

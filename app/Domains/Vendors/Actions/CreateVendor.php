@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domains\Vendors\Actions;
 
 use App\Domains\Tags\Actions\CreateTags;
-use App\Domains\Tags\Enums\TagModelsEnum;
 use App\Domains\Vendors\Vendor;
 use App\Domains\Vendors\Enums\VendorTypesEnum;
 use Illuminate\Support\Facades\Response;
@@ -29,9 +28,13 @@ class CreateVendor
 
     public function handle(array $params): Vendor
     {
-        $params['tag_ids'] = CreateTags::run($params['tag_ids'], TagModelsEnum::VENDOR);
+        $tag_ids = $params['tag_ids'];
+        unset($params['tag_ids']);
+        $tag_ids = CreateTags::run($tag_ids);
+        $vendor = Vendor::create($params);
+        $vendor->tags()->sync($tag_ids);
 
-        return Vendor::create($params);
+        return $vendor;
     }
 
     public function rules(): array

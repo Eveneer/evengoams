@@ -27,7 +27,6 @@ return new class extends Migration
 
             $table->uuid('parent_id')->nullable()->references('id')->on('transactions');
             $table->string('note')->nullable();
-            $table->json('tag_ids')->nullable();
             $table->boolean('is_last')->default(true);
             $table->timestamps();
         });

@@ -27,7 +27,7 @@ class CreateTag
 
     public function handle(array $params): Tag
     {
-        $tag = Tag::exists($params['name'], $params['model']);
+        $tag = Tag::exists($params['name']);
 
         if ($tag === false) {
             $params['key'] = Tag::constructKey($params['name']);
@@ -55,8 +55,6 @@ class CreateTag
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'key' => ['required', 'string', 'max:255', 'unique:tags,key'],
-            'model' => ['required', 'in:' . implode(',', TagModelsEnum::getValues())],
         ];
     }
 

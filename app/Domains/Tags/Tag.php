@@ -2,13 +2,13 @@
 
 namespace App\Domains\Tags;
 
-use App\Domains\Tags\Enums\TagModelsEnum;
+use App\Domains\Transactions\Transaction;
+use App\Domains\Vendors\Vendor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
@@ -25,16 +25,14 @@ class Tag extends Model
         return $this->morphTo();
     }
 
-    public function transactions(): Builder
+    public function transactions(): BelongsToMany
     {
-        return DB::table('transaction')
-            ->where('tag_ids', 'LIKE', "%$this->id%");
+        return $this->belongsToMany(Transaction::class);
     }
 
-    public function vendors(): Builder
+    public function vendors(): BelongsToMany
     {
-        return DB::table('vendor')
-            ->where('tag_ids', 'LIKE', "%$this->id%");
+        return $this->belongsToMany(Vendor::class);
     }
 
     public static function constructKey(string $tag): string
@@ -49,9 +47,9 @@ class Tag extends Model
         return $tag;
     }
 
-    public static function exists(string $tag, string $model): bool | Tag
+    public static function exists(string $tag): bool | Tag
     {
-        $tag = self::where('key', self::constructKey($tag))->where('model', $model)->first();
+        $tag = self::where('key', self::constructKey($tag))->first();
 
         return $tag === null ? false : $tag;
     }
