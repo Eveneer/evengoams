@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domains\Users\Actions;
 
+use App\Domains\Users\Enums\UserTypesEnum;
 use App\Domains\Users\User;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
@@ -32,7 +33,10 @@ class CreateUser
     public function rules(): array
     {
         return [
-
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'type' => ['required', 'in:' . implode(',', UserTypesEnum::getValues())],
         ];
     }
 
