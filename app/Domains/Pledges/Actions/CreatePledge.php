@@ -35,7 +35,7 @@ class CreatePledge
         return [
             'donor_id' => ['required', 'exists:donors,id'],
             'amount' => ['nullable', 'integer', 'min:0'],
-            'recurs' => ['required', 'in:' . implode(',', PledgeRecursEnum::asArray())],
+            'recurs' => ['required', 'in:' . implode(',', PledgeRecursEnum::getValues())],
             'due_date' => ['nullable', 'date'],
         ];
     }

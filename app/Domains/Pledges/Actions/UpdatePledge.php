@@ -37,7 +37,7 @@ class EditPledge
             'id' => ['required', 'exists:pledges,id'],
             'donor_id' => ['sometimes', 'exists:donors,id'],
             'amount' => ['sometimes', 'nullable', 'integer', 'min:0'],
-            'recurs' => ['sometimes', 'in:' . implode(',', PledgeRecursEnum::asArray())],
+            'recurs' => ['sometimes', 'in:' . implode(',', PledgeRecursEnum::getValues())],
             'due_date' => ['sometimes', 'nullable', 'date'],
         ];
     }
