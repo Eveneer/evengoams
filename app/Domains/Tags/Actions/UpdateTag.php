@@ -51,7 +51,7 @@ class EditTag
             'id' => ['required', 'exists:tags,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'key' => ['required', 'string', 'max:255', 'unique:tags,key,' . request()->route('tag')->id],
-            'model' => ['required', 'in:' . implode(',', TagModelsEnum::asArray())],
+            'model' => ['required', 'in:' . implode(',', TagModelsEnum::getValues())],
         ];
     }
 

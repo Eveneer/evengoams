@@ -49,7 +49,7 @@ class CreateTag
         return [
             'name' => ['required', 'string', 'max:255'],
             'key' => ['required', 'string', 'max:255', 'unique:tags,key'],
-            'model' => ['required', 'in:' . implode(',', TagModelsEnum::asArray())],
+            'model' => ['required', 'in:' . implode(',', TagModelsEnum::getValues())],
         ];
     }
 
