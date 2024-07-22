@@ -17,10 +17,16 @@ class Donor extends Model
         'email',
         'phone',
         'address',
-        'occupation',
-        'title',
-        'company',
+        'is_individual',
+        'details',
     ];
+
+    protected function casts()
+    {
+        return [
+            'details' => 'array'
+        ];
+    }
 
     public function donations(): MorphMany
     {
