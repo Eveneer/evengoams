@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Domains\Vendors\Actions\CreateVendor;
 use Database\Factories\VendorFactory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class VendorSeeder extends Seeder

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Domains\Donors\Actions\CreateDonor;
 use Database\Factories\DonorFactory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DonorSeeder extends Seeder
