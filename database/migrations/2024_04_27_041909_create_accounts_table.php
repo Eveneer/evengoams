@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->unsignedBigInteger('balance');
+            $table->bigInteger('balance');
             $table->enum('type', AccountTypesEnum::getValues());
             $table->json('details');
             $table->timestamps();

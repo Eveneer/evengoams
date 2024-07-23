@@ -2,18 +2,15 @@
 
 namespace App\Domains\Transactions;
 
-use App\Domains\Tags\Enums\TagModelsEnum;
+use App\Domains\Accounts\Account;
 use App\Domains\Tags\Tag;
 use App\Domains\Users\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\DB;
 
 class Transaction extends Model
 {
@@ -23,14 +20,12 @@ class Transaction extends Model
         'date',
         'amount',
         'author_id',
-        'type',
         'fromable_type',
         'fromable_id',
         'toable_type',
         'toable_id',
         'parent_id',
         'note',
-        'tag_ids',
         'is_last',
     ];
 
@@ -38,33 +33,50 @@ class Transaction extends Model
         'tag_ids' => 'array',
     ];
 
+    protected $appends = [
+        'type',
+        'from',
+        'to'
+    ];
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    public function from(): MorphTo
+    public function fromable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('fromable');
     }
 
-    public function to(): MorphTo
+    public function toable(): MorphTo
     {
-        return $this->morphTo();
-    }
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
-
-    public function child(): HasOne
-    {
-        return $this->hasOne(self::class, 'parent_id');
+        return $this->morphTo('toable');
     }
 
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function getTypeAttribute(): string
+    {
+        if ($this->fromable_type === Account::class && $this->toable_type === Account::class) {
+            return 'transfer';
+        } elseif ($this->fromable_type === Account::class) {
+            return 'expense';
+        } else {
+            return 'income';
+        }
+    }
+
+    public function getFromAttribute(): mixed
+    {
+        return $this->fromable;
+    }
+
+    public function getToAttribute(): mixed
+    {
+        return $this->toable;
     }
 }

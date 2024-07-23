@@ -9,7 +9,6 @@ use App\Domains\Donors\Donor;
 use App\Domains\Employees\Employee;
 use App\Domains\RevenueStreams\RevenueStream;
 use App\Domains\Transactions\Transaction;
-use App\Domains\Transactions\Enums\TransactionTypesEnum;
 use App\Domains\Vendors\Vendor;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
@@ -44,7 +43,6 @@ class EditTransaction
             'date' => ['sometimes', 'date'],
             'amount' => ['sometimes', 'integer', 'min:0'],
             'author_id' => ['sometimes', 'exists:users,id'],
-            'type' => ['sometimes', 'in:' . implode(',', TransactionTypesEnum::getValues())],
             'fromable_type' => [
                 'required',
                 'in:' . implode(',', [Account::class, Donor::class, RevenueStream::class])
@@ -55,10 +53,8 @@ class EditTransaction
                 'in:' . implode(',', [Account::class, Employee::class, Vendor::class])
             ],
             'toable_id' => ['required', 'uuid'],
-            'parent_id' => ['sometimes', 'nullable', 'exists:transactions,id'],
             'note' => ['sometimes', 'nullable', 'string'],
             'tag_ids' => ['sometimes', 'nullable', 'json'],
-            'is_last' => ['sometimes', 'boolean'],
         ];
     }
 

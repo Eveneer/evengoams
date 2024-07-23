@@ -15,4 +15,7 @@ final class TransactionTypesEnum extends Enum
     
     #[Description('Transaction leading to decrease in account balance')]
     public const EXPENSE = 'expense';
+
+    #[Description('Transaction leading to overall amount in all accounts to be the same')]
+    public const TRANSFER = 'transfer';
 }

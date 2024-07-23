@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Domains\Transactions\Actions;
 
 use App\Domains\Accounts\Account;
+use App\Domains\Accounts\Actions\AddBalance;
 use App\Domains\Donors\Donor;
 use App\Domains\Employees\Employee;
 use App\Domains\RevenueStreams\RevenueStream;
+use App\Domains\Tags\Actions\CreateTags;
 use App\Domains\Transactions\Transaction;
-use App\Domains\Transactions\Enums\TransactionTypesEnum;
 use App\Domains\Vendors\Vendor;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
@@ -33,7 +34,22 @@ class CreateTransaction
 
     public function handle(array $params): Transaction
     {
-        return Transaction::create($params);
+        $params['amount'] = $params['amount'] * 100;
+        
+        if ($params['fromable_type'] === Account::class)
+            AddBalance::run(['id' => $params['fromable_id'], 'amount' => -1 * $params['amount']]);
+
+        if ($params['toable_type'] === Account::class)
+            AddBalance::run(['id' => $params['toable_id'], 'amount' => $params['amount']]);
+
+        $tag_ids = $params['tag_ids'];
+        unset($params['tag_ids']);
+        $tag_ids = CreateTags::run($tag_ids);
+        $transaction = Transaction::create($params);
+
+        $transaction->tags()->sync($tag_ids);
+
+        return $transaction;
     }
 
     public function rules(): array
@@ -42,7 +58,6 @@ class CreateTransaction
             'date' => ['required', 'date'],
             'amount' => ['required', 'integer', 'min:0'],
             'author_id' => ['required', 'exists:users,id'],
-            'type' => ['required', 'in:' . implode(',', TransactionTypesEnum::getValues())],
             'fromable_type' => [
                 'required',
                 'in:' . implode(',', [Account::class, Donor::class, RevenueStream::class])
@@ -53,10 +68,8 @@ class CreateTransaction
                 'in:' . implode(',', [Account::class, Employee::class, Vendor::class])
             ],
             'toable_id' => ['required', 'uuid'],
-            'parent_id' => ['nullable', 'uuid', 'exists:transactions,id'],
             'note' => ['nullable', 'string'],
-            'tag_ids' => ['nullable', 'json'],
-            'is_last' => ['boolean'],
+            'tag_ids' => ['nullable', 'array'],
         ];
     }
 
