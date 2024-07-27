@@ -33,6 +33,13 @@ class TrashEmployee
         return $this->handle($employee);
     }
 
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:employees,id'],
+        ];
+    }
+
     public function jsonResponse(bool $deleted): array
     {
         $success = $deleted ? 'successful' : 'unsuccessful';
