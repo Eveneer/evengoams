@@ -33,6 +33,13 @@ class TrashRevenueStream
         return $this->handle($revenuestream);
     }
 
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:revenue_streams,id'],
+        ];
+    }
+
     public function jsonResponse(bool $deleted): array
     {
         $success = $deleted ? 'successful' : 'unsuccessful';
