@@ -89,7 +89,7 @@ class CreateFile extends DevTool
     {
         $domain = ucfirst($domain);
         $pluralised_domain = Str::plural($domain);
-        $var_name = Str::snake(strtolower($domain));
+        $var_name = strtolower(Str::snake($domain));
 
         return "<?php
 
@@ -148,7 +148,7 @@ class Create$domain
     {
         $domain = ucfirst($domain);
         $pluralised_domain = Str::plural($domain);
-        $var_name = Str::snake(strtolower($domain));
+        $var_name = strtolower(Str::snake($domain));
 
         return "<?php
 
@@ -208,7 +208,7 @@ class Edit$domain
     {
         $domain = ucfirst($domain);
         $pluralised_domain = Str::plural($domain);
-        $var_name = Str::snake(strtolower($domain));
+        $var_name = strtolower(Str::snake($domain));
 
         return "<?php
 
@@ -261,7 +261,7 @@ class Trash$domain
     {
         $domain = ucfirst($domain);
         $pluralised_domain = Str::plural($domain);
-        $var_name = Str::snake(strtolower($domain));
+        $var_name = strtolower(Str::snake($domain));
 
         return "<?php
 
