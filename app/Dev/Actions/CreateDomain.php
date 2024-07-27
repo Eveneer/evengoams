@@ -32,8 +32,9 @@ class CreateDomain extends DevTool
             throw new InvalidParamsException();
 
         $singularised_domain = Str::singular(ucfirst($params['domain']));
-        CreateFolder::run(['path' => $params['domain'] . '/Actions']);
-        CreateFolder::run(['path' => $params['domain'] . '/Enums']);
+        $pluralised_domain = Str::plural(ucfirst($params['domain']));
+        CreateFolder::run(['path' => $pluralised_domain . '/Actions']);
+        CreateFolder::run(['path' => $pluralised_domain . '/Enums']);
 
         $files = [
             ['type' => DomainFileTypesEnum::CREATE_ACTION, 'filename' => "Create$singularised_domain.php"],
