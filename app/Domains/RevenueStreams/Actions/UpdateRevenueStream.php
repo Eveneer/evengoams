@@ -24,10 +24,10 @@ class EditRevenueStream
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(RevenueStream $revenuestream, array $params): RevenueStream
+    public function handle(RevenueStream $revenue_stream, array $params): RevenueStream
     {
-        $revenuestream->update($params);
-        return $revenuestream;
+        $revenue_stream->update($params);
+        return $revenue_stream;
     }
 
     public function rules(): array
@@ -41,12 +41,12 @@ class EditRevenueStream
         ];
     }
 
-    public function asController(RevenueStream $revenuestream, Request $request)
+    public function asController(RevenueStream $revenue_stream, Request $request)
     {
-        return $this->handle($revenuestream, $request->validated());
+        return $this->handle($revenue_stream, $request->validated());
     }
 
-    public function jsonResponse(RevenueStream $revenuestream, Request $request): array
+    public function jsonResponse(RevenueStream $revenue_stream, Request $request): array
     {
         return [
             'message' => 'RevenueStream updated successfully',

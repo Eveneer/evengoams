@@ -26,10 +26,10 @@ class RestoreRevenueStream
 
     public function handle(array $params): RevenueStream
     {
-        $revenuestream = RevenueStream::withTrashed()->where('id', $params['id'])->first();
-        $revenuestream->restore();
+        $revenue_stream = RevenueStream::withTrashed()->where('id', $params['id'])->first();
+        $revenue_stream->restore();
 
-        return $revenuestream;
+        return $revenue_stream;
     }
 
     public function rules(): array
@@ -44,7 +44,7 @@ class RestoreRevenueStream
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(RevenueStream $revenuestream, Request $request): array
+    public function jsonResponse(RevenueStream $revenue_stream, Request $request): array
     {
         return [
             'message' => 'RevenueStream restored successfully',
