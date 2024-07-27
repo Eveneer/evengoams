@@ -33,7 +33,14 @@ class EditEmployee
     public function rules(): array
     {
         return [
-
+            'id' => ['required', 'exists:employees,id'],
+            'first_name' => ['sometimes', 'string', 'max:255'],
+            'last_name' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'email', 'unique:employees,email,' . request()->id],
+            'phone_number' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'position' => ['sometimes', 'string', 'max:255'],
+            'salary' => ['sometimes', 'numeric', 'min:0'],
+            'hire_date' => ['sometimes', 'date'],
         ];
     }
 
