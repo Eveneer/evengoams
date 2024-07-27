@@ -33,7 +33,11 @@ class EditRevenueStream
     public function rules(): array
     {
         return [
-
+            'id' => ['required', 'exists:revenue_streams,id'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'string'],
+            'type_id' => ['sometimes', 'exists:revenue_stream_types,id'],
+            'values' => ['sometimes', 'json'],
         ];
     }
 

@@ -32,7 +32,10 @@ class CreateRevenueStream
     public function rules(): array
     {
         return [
-
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'type_id' => ['required', 'exists:revenue_stream_types,id'],
+            'values' => ['required', 'json'],
         ];
     }
 
