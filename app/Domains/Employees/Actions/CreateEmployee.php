@@ -32,7 +32,13 @@ class CreateEmployee
     public function rules(): array
     {
         return [
-
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:employees,email'],
+            'phone_number' => ['nullable', 'string', 'max:20'],
+            'position' => ['required', 'string', 'max:255'],
+            'salary' => ['required', 'numeric', 'min:0'],
+            'hire_date' => ['required', 'date'],
         ];
     }
 

@@ -35,7 +35,7 @@ class RestoreEmployee
     public function rules(): array
     {
         return [
-            'id' => ['exists:']
+            'id' => ['required', 'exists:employees,id'],
         ];
     }
 
