@@ -24,10 +24,10 @@ class EditRevenueStreamType
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(RevenueStreamType $revenuestreamtype, array $params): RevenueStreamType
+    public function handle(RevenueStreamType $revenue_stream_type, array $params): RevenueStreamType
     {
-        $revenuestreamtype->update($params);
-        return $revenuestreamtype;
+        $revenue_stream_type->update($params);
+        return $revenue_stream_type;
     }
 
     public function rules(): array
@@ -37,12 +37,12 @@ class EditRevenueStreamType
         ];
     }
 
-    public function asController(RevenueStreamType $revenuestreamtype, Request $request)
+    public function asController(RevenueStreamType $revenue_stream_type, Request $request)
     {
-        return $this->handle($revenuestreamtype, $request->validated());
+        return $this->handle($revenue_stream_type, $request->validated());
     }
 
-    public function jsonResponse(RevenueStreamType $revenuestreamtype, Request $request): array
+    public function jsonResponse(RevenueStreamType $revenue_stream_type, Request $request): array
     {
         return [
             'message' => 'RevenueStreamType updated successfully',

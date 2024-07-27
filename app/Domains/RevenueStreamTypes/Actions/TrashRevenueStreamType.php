@@ -23,14 +23,14 @@ class TrashRevenueStreamType
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(RevenueStreamType $revenuestreamtype): bool
+    public function handle(RevenueStreamType $revenue_stream_type): bool
     {
-        return $revenuestreamtype->delete();
+        return $revenue_stream_type->delete();
     }
 
-    public function asController(RevenueStreamType $revenuestreamtype)
+    public function asController(RevenueStreamType $revenue_stream_type)
     {
-        return $this->handle($revenuestreamtype);
+        return $this->handle($revenue_stream_type);
     }
 
     public function jsonResponse(bool $deleted): array
