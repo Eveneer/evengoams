@@ -2,9 +2,11 @@
 
 namespace App\Domains\RevenueStreamTypes;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Domains\RevenueStreams\RevenueStream;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class RevenueStreamType extends Model
 {
@@ -19,4 +21,9 @@ class RevenueStreamType extends Model
     protected $casts = [
         'properties' => 'array',
     ];
+
+    public function revenueStreams(): HasMany
+    {
+        return $this->hasMany(RevenueStream::class);
+    }
 }
