@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreams\Actions;
 
-use App\Domains\RevenueStreams\RevenueStream;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
+use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Domains\RevenueStreams\RevenueStream;
+use App\Domains\RevenueStreamTypes\RevenueStreamType;
 
 class EditRevenueStream
 {
@@ -30,15 +32,26 @@ class EditRevenueStream
         return $revenue_stream;
     }
 
-    public function rules(): array
+    public function rules(ActionRequest $request): array
     {
-        return [
+        $rules = [
             'id' => ['required', 'exists:revenue_streams,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
             'type_id' => ['sometimes', 'exists:revenue_stream_types,id'],
-            'values' => ['sometimes', 'json'],
+            'values' => ['sometimes', 'array'],
         ];
+
+        if ($request->has('type_id')) {
+            $type = RevenueStreamType::find($request->type_id);
+            if ($type) {
+                foreach ($type->properties as $property) {
+                    $rules['values.' . $property['name']] = ['required', Rule::in(['single_line', 'multi_line', 'text', 'range', 'radio', 'checkbox', 'dropbox', 'repeater'])];
+                }
+            }
+        }
+
+        return $rules;
     }
 
     public function asController(RevenueStream $revenue_stream, Request $request)
