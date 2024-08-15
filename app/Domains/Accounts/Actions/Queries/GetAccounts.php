@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Accounts\Actions\Queries;
+namespace App\Domains\Accounts\Actions;
 
-use Illuminate\Http\Request;
 use App\Domains\Accounts\Account;
-use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Support\Facades\Response;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetAccounts
@@ -18,19 +17,28 @@ class GetAccounts
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user->has_general_access) {
             return Response::allow();
+        }
 
-        return Response::deny('You are unauthorised to perform this action');
+        return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle()
+    public function handle(): array
     {
-        return Account::paginate(10);
+        return Account::paginate(10)->toArray();
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
-        return $this->handle($request->validated());
+        return $this->handle();
+    }
+
+    public function jsonResponse(array $accounts): array
+    {
+        return [
+            'data' => $accounts,
+            'message' => count($accounts) . ' accounts fetched successfully',
+        ];
     }
 }
