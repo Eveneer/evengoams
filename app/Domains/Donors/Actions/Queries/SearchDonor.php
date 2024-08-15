@@ -6,11 +6,10 @@ namespace App\Domains\Donors\Actions;
 
 use App\Domains\Donors\Donor;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class SearchDonors
+class SearchDonor
 {
     use AsAction;
 
@@ -25,13 +24,15 @@ class SearchDonors
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(array $params): array
+    public function handle(string $searchTerm): array
     {
         $query = Donor::query();
 
-        if (!empty($params['name'])) {
-            $query->where('name', 'like', '%' . $params['name'] . '%');
-        }
+        $query->where('name', 'like', '%' . $searchTerm . '%')
+              ->orWhere('phone', 'like', '%' . $searchTerm . '%')
+              ->orWhere('email', 'like', '%' . $searchTerm . '%')
+              ->orWhere('address', 'like', '%' . $searchTerm . '%')
+              ->orWhere('details', 'like', '%' . $searchTerm . '%');
 
         return $query->get()->toArray();
     }
@@ -39,13 +40,14 @@ class SearchDonors
     public function rules(): array
     {
         return [
-            'name' => ['nullable', 'string', 'max:255'],
+            'searchTerm' => ['required', 'string'],
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
-        return $this->handle($request->validated());
+        $searchTerm = $request->input('searchTerm');
+        return $this->handle($searchTerm);
     }
 
     public function jsonResponse(array $donors): array
