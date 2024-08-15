@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class ReadDonor
+class GetDonor
 {
     use AsAction;
 
@@ -26,7 +26,7 @@ class ReadDonor
 
     public function handle(string $id): Donor
     {
-        return Donor::findOrFail($id);
+        return Donor::find($id);
     }
 
     public function rules(): array
