@@ -24,15 +24,15 @@ class SearchDonor
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(string $searchTerm): array
+    public function handle(string $search_term): array
     {
         $query = Donor::query();
 
-        $query->where('name', 'like', '%' . $searchTerm . '%')
-              ->orWhere('phone', 'like', '%' . $searchTerm . '%')
-              ->orWhere('email', 'like', '%' . $searchTerm . '%')
-              ->orWhere('address', 'like', '%' . $searchTerm . '%')
-              ->orWhere('details', 'like', '%' . $searchTerm . '%');
+        $query->where('name', 'like', '%' . $search_term . '%')
+              ->orWhere('phone', 'like', '%' . $search_term . '%')
+              ->orWhere('email', 'like', '%' . $search_term . '%')
+              ->orWhere('address', 'like', '%' . $search_term . '%')
+              ->orWhere('details', 'like', '%' . $search_term . '%');
 
         return $query->get()->toArray();
     }
@@ -40,14 +40,14 @@ class SearchDonor
     public function rules(): array
     {
         return [
-            'searchTerm' => ['required', 'string'],
+            'search_term' => ['required', 'string'],
         ];
     }
 
     public function asController(ActionRequest $request)
     {
-        $searchTerm = $request->input('searchTerm');
-        return $this->handle($searchTerm);
+        $search_term = $request->input('search_term');
+        return $this->handle($search_term);
     }
 
     public function jsonResponse(array $donors): array

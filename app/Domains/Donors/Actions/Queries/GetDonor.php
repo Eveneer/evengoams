@@ -24,7 +24,7 @@ class GetDonor
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(string $id): Donor
+    public function handle(string $id): Donor | null
     {
         return Donor::find($id);
     }
