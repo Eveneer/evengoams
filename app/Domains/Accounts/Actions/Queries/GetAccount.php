@@ -24,7 +24,7 @@ class GetAccount
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(string $id): Account
+    public function handle(string $id): Account | null
     {
         return Account::find($id);
     }

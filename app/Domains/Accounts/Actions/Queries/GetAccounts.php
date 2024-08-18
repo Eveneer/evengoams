@@ -24,14 +24,15 @@ class GetAccounts
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(): array
+    public function handle(int $per_page): array
     {
-        return Account::paginate(10)->toArray();
+        return Account::paginate($per_page)->toArray();
     }
 
     public function asController(ActionRequest $request)
     {
-        return $this->handle();
+        $per_page = $request->input('per_page', 10);
+        return $this->handle($per_page);
     }
 
     public function jsonResponse(array $accounts): array
