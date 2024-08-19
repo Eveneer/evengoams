@@ -28,11 +28,9 @@ class GetOrSearchAccounts
     {
         if ($search_term) {
 
-            $query = Account::query();
-            $query->where('name', 'like', '%' . $search_term . '%')
-                  ->orWhere('details', 'like', '%' . $search_term . '%');
-
-            return $query->get()->toArray();
+            return Account::where('name', 'like', '%' . $search_term . '%')
+            ->orWhere('details', 'like', '%' . $search_term . '%')
+            ->paginate(10);
         }
 
         return Account::paginate($per_page)->toArray();
