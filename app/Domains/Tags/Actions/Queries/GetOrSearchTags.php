@@ -29,7 +29,6 @@ class GetOrSearchTags
         if ($search_term) {
 
             return Tag::where('name', 'like', '%' . $search_term . '%')
-            ->orWhere('contacts', 'like', '%' . $search_term . '%')
             ->paginate(10);
         }
 
