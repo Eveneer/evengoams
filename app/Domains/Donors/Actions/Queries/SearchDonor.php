@@ -26,15 +26,14 @@ class SearchDonor
 
     public function handle(string $search_term): array
     {
-        $query = Donor::query();
-
-        $query->where('name', 'like', '%' . $search_term . '%')
-              ->orWhere('phone', 'like', '%' . $search_term . '%')
-              ->orWhere('email', 'like', '%' . $search_term . '%')
-              ->orWhere('address', 'like', '%' . $search_term . '%')
-              ->orWhere('details', 'like', '%' . $search_term . '%');
-
-        return $query->get()->toArray();
+        
+        return Donor::where('name', 'like', '%' . $search_term . '%')
+            ->orWhere('phone', 'like', '%' . $search_term . '%')
+            ->orWhere('email', 'like', '%' . $search_term . '%')
+            ->orWhere('address', 'like', '%' . $search_term . '%')
+            ->orWhere('details', 'like', '%' . $search_term . '%')
+            ->paginate(10);
+        
     }
 
     public function rules(): array

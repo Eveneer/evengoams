@@ -28,14 +28,12 @@ class GetOrSearchDonors
     {
         if ($search_term) {
 
-            $query = Donor::query();
-            $query->where('name', 'like', '%' . $search_term . '%')
-                ->orWhere('phone', 'like', '%' . $search_term . '%')
-                ->orWhere('email', 'like', '%' . $search_term . '%')
-                ->orWhere('address', 'like', '%' . $search_term . '%')
-                ->orWhere('details', 'like', '%' . $search_term . '%');
-
-            return $query->get()->toArray();
+            return Donor::where('name', 'like', '%' . $search_term . '%')
+            ->orWhere('phone', 'like', '%' . $search_term . '%')
+            ->orWhere('email', 'like', '%' . $search_term . '%')
+            ->orWhere('address', 'like', '%' . $search_term . '%')
+            ->orWhere('details', 'like', '%' . $search_term . '%')
+            ->paginate(10);
         }
 
         return Donor::paginate($per_page)->toArray();
