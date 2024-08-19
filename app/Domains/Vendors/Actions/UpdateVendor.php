@@ -28,6 +28,11 @@ class EditVendor
     public function handle(Vendor $vendor, array $params): Vendor
     {
         $vendor->update($params);
+
+        if (isset($params['tag_ids'])) {
+            $vendor->tags()->sync($params['tag_ids']);
+        }
+
         return $vendor;
     }
 
