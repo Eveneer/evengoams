@@ -26,12 +26,9 @@ class SearchAccount
 
     public function handle(string $search_term): array
     {
-        $query = Account::query();
-
-        $query->where('name', 'like', '%' . $search_term . '%')
-              ->orWhere('details', 'like', '%' . $search_term . '%');
-
-        return $query->get()->toArray();
+        return Account::where('name', 'like', '%' . $search_term . '%')
+        ->orWhere('details', 'like', '%' . $search_term . '%')
+        ->paginate(10);
     }
 
     public function rules(): array
