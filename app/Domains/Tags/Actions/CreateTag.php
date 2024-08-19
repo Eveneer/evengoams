@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domains\Tags\Actions;
 
 use App\Domains\Tags\Tag;
-use App\Domains\Tags\Enums\TagModelsEnum;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -35,20 +34,6 @@ class CreateTag
         }
 
         return $tag;
-    }
-
-    public function prepareForValidation(ActionRequest $request): void
-    {
-        $key = $request->name;
-        
-        // remove multiple spaces
-        $key = preg_replace('/\s+/', ' ', $key);
-        // convert spaces to dashes
-        $key = str_replace(' ', '-', $key);
-        // lowercase the key
-        $key = strtolower($key);
-
-        $request->merge(['key' => $key]);
     }
 
     public function rules(): array
