@@ -28,6 +28,14 @@ class EditTag
     public function handle(Tag $tag, array $params): Tag
     {
         $tag->update($params);
+
+        $tag = Tag::exists($params['name']);
+
+        if ($tag === false) {
+            $params['key'] = Tag::constructKey($params['name']);
+            $tag = Tag::create($params);
+        }
+        
         return $tag;
     }
 
@@ -36,8 +44,6 @@ class EditTag
         return [
             'id' => ['required', 'exists:tags,id'],
             'name' => ['sometimes', 'string', 'max:255'],
-            'key' => ['required', 'string', 'max:255', 'unique:tags,key,' . request()->route('tag')->id],
-            'model' => ['required', 'in:' . implode(',', TagModelsEnum::getValues())],
         ];
     }
 
