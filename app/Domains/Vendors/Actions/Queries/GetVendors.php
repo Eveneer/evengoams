@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class GetOrSearchVendors
+class GetVendors
 {
     use AsAction;
 
