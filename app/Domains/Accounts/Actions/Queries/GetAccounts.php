@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class GetAccounts
+class GetOrSearchAccounts
 {
     use AsAction;
 
@@ -24,22 +24,42 @@ class GetAccounts
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(int $per_page): array
+    public function handle(?string $search_term, int $per_page): array
     {
+        if ($search_term) {
+
+            return Account::where('name', 'like', '%' . $search_term . '%')
+            ->orWhere('details', 'like', '%' . $search_term . '%')
+            ->paginate(10);
+        }
+
         return Account::paginate($per_page)->toArray();
+    }
+
+    public function rules(): array
+    {
+        return [
+            'search_term' => ['nullable', 'string'],
+            'per_page' => ['nullable', 'integer', 'min:1'],
+        ];
     }
 
     public function asController(ActionRequest $request)
     {
+        $search_term = $request->input('search_term', null);
         $per_page = $request->input('per_page', 10);
-        return $this->handle($per_page);
+
+        return $this->handle($search_term, $per_page);
     }
 
-    public function jsonResponse(array $accounts): array
+    public function jsonResponse(array $accounts, ActionRequest $request): array
     {
+        $message = count($accounts) . ' accounts ';
+        $message .= $request->input('search_term') ? 'found' : 'fetched';
+
         return [
             'data' => $accounts,
-            'message' => count($accounts) . ' accounts fetched successfully',
+            'message' => $message . ' successfully',
         ];
     }
 }
