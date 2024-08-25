@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Accounts\Actions;
+namespace App\Domains\Accounts\Actions\Queries;
 
 use App\Domains\Accounts\Account;
 use Illuminate\Support\Facades\Response;

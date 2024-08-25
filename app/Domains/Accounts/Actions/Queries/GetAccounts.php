@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Accounts\Actions;
+namespace App\Domains\Accounts\Actions\Queries;
 
 use App\Domains\Accounts\Account;
-use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\ActionRequest;
+use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class GetAccounts
 {
@@ -24,16 +26,19 @@ class GetAccounts
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(?string $search_term, int $per_page): array
+    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
     {
+        $query = Account::query();
+
         if ($search_term) {
-
-            return Account::where('name', 'like', '%' . $search_term . '%')
-            ->orWhere('details', 'like', '%' . $search_term . '%')
-            ->paginate(10);
+            $query
+                ->where('name', 'like', "%$search_term%")
+                ->orWhere('details', 'like', "%$search_term%");
         }
-
-        return Account::paginate($per_page)->toArray();
+    
+        return $per_page === null ?
+            $query->get() :
+            $query->paginate($per_page);
     }
 
     public function rules(): array
@@ -46,8 +51,8 @@ class GetAccounts
 
     public function asController(ActionRequest $request)
     {
-        $search_term = $request->input('search_term', null);
-        $per_page = $request->input('per_page', 10);
+        $search_term = $request->input('search_term');
+        $per_page = $request->input('per_page');
 
         return $this->handle($search_term, $per_page);
     }
