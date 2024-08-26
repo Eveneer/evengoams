@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Vendors\Actions;
+namespace App\Domains\Vendors\Actions\Queries;
 
 use App\Domains\Vendors\Vendor;
 use Illuminate\Support\Facades\Response;
