@@ -6,7 +6,7 @@ namespace App\Domains\Accounts\Actions;
 
 use App\Domains\Accounts\Account;
 use App\Domains\Accounts\Enums\AccountTypesEnum;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
