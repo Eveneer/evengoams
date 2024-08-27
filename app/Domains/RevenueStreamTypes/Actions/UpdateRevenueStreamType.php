@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreamTypes\Actions;
 
+use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 use App\Domains\RevenueStreamTypes\RevenueStreamType;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
-use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Domains\RevenueStreamTypes\RevenueStreamType;
-use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 
 class EditRevenueStreamType
 {
