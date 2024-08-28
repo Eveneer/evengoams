@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreamTypes\Actions;
 
+use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 use App\Domains\RevenueStreamTypes\RevenueStreamType;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -36,6 +38,33 @@ class EditRevenueStreamType
 
         ];
     }
+
+    public function withValidator(Validator $validator, ActionRequest $request): void
+    {
+        $validator->after(function (Validator $validator) use ($request) {
+            $properties = $request->input('properties', []);
+    
+            $validateProperties = function (array $properties) use (&$validateProperties, $validator) {
+                foreach ($properties as $index => $property) {
+    
+                    if (empty($property['name'])) {
+                        $validator->errors()->add("name",'The name field is required.');
+                    }
+    
+                    if (!in_array($property['type'], RevenueStreamTypesEnum::getValues())) {
+                        $validator->errors()->add("type", 'The selected type is invalid.');
+                    }
+    
+                    if ($property['type'] === 'repeater' && isset($property['properties'])) {
+                        $validateProperties($property['properties']);
+                    }
+                }
+            };
+    
+            $validateProperties($properties);
+        });
+    }
+    
 
     public function asController(RevenueStreamType $revenue_stream_type, Request $request)
     {
