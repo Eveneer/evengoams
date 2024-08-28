@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreamTypes\Actions;
 
-use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 use App\Domains\RevenueStreamTypes\RevenueStreamType;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
 
 class EditRevenueStreamType
 {
@@ -38,8 +38,6 @@ class EditRevenueStreamType
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'properties' => ['required', 'array'],
-            'properties.*.name' => ['required', 'string'],
-            'properties.*.type' => ['required', 'in:' . implode(',', RevenueStreamTypesEnum::getValues())],
         ];
     }
 
