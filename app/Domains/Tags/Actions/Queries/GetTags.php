@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Tags\Actions;
+namespace App\Domains\Tags\Actions\Queries;
 
 use App\Domains\Tags\Tag;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
 
 class GetTags
 {
@@ -24,15 +27,18 @@ class GetTags
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(?string $search_term, int $per_page): array
+    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
     {
+        $query = Tag::query();
+
         if ($search_term) {
-
-            return Tag::where('name', 'like', '%' . $search_term . '%')
-            ->paginate(10);
+            $query
+                ->where('name', 'like', "%$search_term%");
         }
-
-        return Tag::paginate($per_page)->toArray();
+    
+        return $per_page === null ?
+            $query->get() :
+            $query->paginate($per_page);
     }
 
     public function rules(): array
