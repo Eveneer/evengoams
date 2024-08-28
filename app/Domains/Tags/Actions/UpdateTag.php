@@ -6,7 +6,7 @@ namespace App\Domains\Tags\Actions;
 
 use App\Domains\Tags\Tag;
 use App\Domains\Tags\Enums\TagModelsEnum;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

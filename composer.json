@@ -8,6 +8,7 @@
         "php": "^8.2",
         "bensampo/laravel-enum": "^6.11",
         "laravel/framework": "^11.0",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "lorisleiva/laravel-actions": "^2.8"
     },
