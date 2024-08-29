@@ -6,7 +6,7 @@ namespace App\Domains\Pledges\Actions;
 
 use App\Domains\Pledges\Pledge;
 use App\Domains\Pledges\Enums\PledgeRecursEnum;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

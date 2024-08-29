@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Configs\Actions;
 
 use App\Domains\Configs\Config;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
