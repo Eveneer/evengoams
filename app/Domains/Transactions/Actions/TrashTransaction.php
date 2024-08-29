@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domains\Transactions\Actions;
 
+
 use App\Domains\Accounts\Account;
-use Lorisleiva\Actions\ActionRequest;
-use Illuminate\Support\Facades\Response;
-use App\Domains\Transactions\Transaction;
-use Lorisleiva\Actions\Concerns\AsAction;
 use App\Domains\Accounts\Actions\AddBalance;
+use App\Domains\Transactions\Transaction;
+use Illuminate\Auth\Access\Response;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class TrashTransaction
 {
