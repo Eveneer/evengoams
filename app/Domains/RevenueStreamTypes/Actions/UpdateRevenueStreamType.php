@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+
 class EditRevenueStreamType
 {
     use AsAction;
@@ -33,7 +34,10 @@ class EditRevenueStreamType
     public function rules(): array
     {
         return [
-
+            'id' => ['required', 'exists:revenue_stream_types,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'properties' => ['required', 'array'],
         ];
     }
 
