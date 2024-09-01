@@ -27,16 +27,19 @@ class EditTag
 
     public function handle(Tag $tag, array $params): Tag
     {
-        $tag->update($params);
 
         $tag = Tag::exists($params['name']);
 
-        if ($tag === false) {
+        if ($tag !== false) {
+            return $tag;
+        }
+
+        elseif ($tag === false) {
             $params['key'] = Tag::constructKey($params['name']);
             $tag = Tag::create($params);
+            $tag->update($params);
+            return $tag;
         }
-        
-        return $tag;
     }
 
     public function rules(): array
