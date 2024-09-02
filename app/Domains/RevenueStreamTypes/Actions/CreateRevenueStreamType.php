@@ -19,7 +19,7 @@ class CreateRevenueStreamType
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
