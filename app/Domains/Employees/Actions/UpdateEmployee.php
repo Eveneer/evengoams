@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class EditEmployee
+class UpdateEmployee
 {
     use AsAction;
 

@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class EditPledge
+class UpdatePledge
 {
     use AsAction;
 

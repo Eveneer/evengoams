@@ -11,7 +11,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
-class EditRevenueStreamType
+class UpdateRevenueStreamType
 {
     use AsAction;
 
