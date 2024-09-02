@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Domains\Donors\Actions\Queries;
 
 use App\Domains\Donors\Donor;
-use Lorisleiva\Actions\ActionRequest;
-use Illuminate\Support\Facades\Response;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetDonors
 {
