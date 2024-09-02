@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Domains\Accounts\Actions\Queries;
 
 use App\Domains\Accounts\Account;
-use Lorisleiva\Actions\ActionRequest;
-use Illuminate\Support\Facades\Response;
-use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetAccounts
 {

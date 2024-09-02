@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domains\Accounts\Actions;
 
-use Illuminate\Http\Request;
 use App\Domains\Accounts\Account;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
-use Illuminate\Support\Facades\Response;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class AddBalance
