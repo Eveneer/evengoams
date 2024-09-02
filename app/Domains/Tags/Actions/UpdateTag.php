@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Domains\Tags\Actions;
 
 use App\Domains\Tags\Tag;
-use App\Domains\Tags\Enums\TagModelsEnum;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class EditTag
+class UpdateTag
 {
     use AsAction;
 
@@ -28,18 +27,15 @@ class EditTag
     public function handle(Tag $tag, array $params): Tag
     {
 
-        $tag = Tag::exists($params['name']);
+    $existingTag = Tag::where('name', $params['name'])->first();
 
-        if ($tag !== false) {
-            return $tag;
-        }
+    if ($existingTag) {
+        return $tag;
+    }
 
-        elseif ($tag === false) {
-            $params['key'] = Tag::constructKey($params['name']);
-            $tag = Tag::create($params);
-            $tag->update($params);
-            return $tag;
-        }
+    $params['key'] = Tag::constructKey($params['name']);
+    $tag->update($params);
+    return $tag;
     }
 
     public function rules(): array
