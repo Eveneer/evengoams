@@ -10,7 +10,7 @@ use App\Domains\Accounts\Actions\TrashAccount;
 use App\Domains\Accounts\Actions\UpdateAccount;
 use Illuminate\Support\Facades\Route;
 
-function account_routes()
+function account_routes(): void
 {
     Route::prefix('accounts')->group(function (): void {
         Route::get('/', GetAccounts::class);
