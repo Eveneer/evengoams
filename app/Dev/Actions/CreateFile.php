@@ -162,7 +162,7 @@ use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class Edit$domain
+class Update$domain
 {
     use AsAction;
 
