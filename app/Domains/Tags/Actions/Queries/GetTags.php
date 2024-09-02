@@ -7,7 +7,7 @@ namespace App\Domains\Tags\Actions\Queries;
 use App\Domains\Tags\Tag;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -51,8 +51,8 @@ class GetTags
 
     public function asController(ActionRequest $request)
     {
-        $search_term = $request->input('search_term', null);
-        $per_page = $request->input('per_page', 10);
+        $search_term = $request->input('search_term');
+        $per_page = $request->input('per_page');
 
         return $this->handle($search_term, $per_page);
     }
