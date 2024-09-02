@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Transactions\Actions;
+namespace App\Domains\Transactions\Actions\Queries;
 
 use App\Domains\Transactions\Transaction;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -24,17 +26,20 @@ class GetTransactions
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(?string $search_term, int $per_page): array
+    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
     {
+        $query = Transaction::query();
+
         if ($search_term) {
-
-            return Transaction::where('fromable_type', 'like', '%' . $search_term . '%')
-            ->orWhere('toable_type', 'like', '%' . $search_term . '%')
-            ->orWhere('note', 'like', '%' . $search_term . '%')
-            ->paginate(10);
+            $query
+                ->where('fromable_type', 'like', "%$search_term%")
+                ->orWhere('toable_type', 'like', "%$search_term%")
+                ->orWhere('note', 'like', "%$search_term%");
         }
-
-        return Transaction::paginate($per_page)->toArray();
+    
+        return $per_page === null ?
+            $query->get() :
+            $query->paginate($per_page);
     }
 
     public function rules(): array
@@ -47,8 +52,8 @@ class GetTransactions
 
     public function asController(ActionRequest $request)
     {
-        $search_term = $request->input('search_term', null);
-        $per_page = $request->input('per_page', 10);
+        $search_term = $request->input('search_term');
+        $per_page = $request->input('per_page');
 
         return $this->handle($search_term, $per_page);
     }
