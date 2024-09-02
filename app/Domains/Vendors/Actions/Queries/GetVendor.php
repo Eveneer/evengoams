@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Vendors\Actions\Queries;
 
 use App\Domains\Vendors\Vendor;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 

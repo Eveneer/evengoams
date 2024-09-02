@@ -27,12 +27,12 @@ class EditVendor
 
     public function handle(Vendor $vendor, array $params): Vendor
     {
-        $vendor->update($params);
 
         if (isset($params['tag_ids'])) {
             $vendor->tags()->sync($params['tag_ids']);
         }
 
+        $vendor->update($params);
         return $vendor;
     }
 
@@ -42,7 +42,7 @@ class EditVendor
             'id' => ['required', 'exists:vendors,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'type' => ['sometimes', 'in:' . implode(',', VendorTypesEnum::asArray())],
-            'tag_ids' => ['nullable', 'array'],
+            'tag_ids' => ['sometimes', 'nullable', 'array'],
             'tag_ids.*' => ['exists:tags,id'],
             'contacts' => ['nullable', 'array'],
             'contacts.*.name' => ['nullable', 'string'],
