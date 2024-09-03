@@ -60,8 +60,10 @@ class EditRevenueStream
         return $this->handle($revenue_stream, $request->validated());
     }
 
-    public function jsonResponse(RevenueStream $revenue_stream, Request $request): array
-    {
+    public function jsonResponse(
+        RevenueStream $revenue_stream,
+         Request $request
+    ): array {
         return [
             'message' => 'RevenueStream updated successfully',
         ];
