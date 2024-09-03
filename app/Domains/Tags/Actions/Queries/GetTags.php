@@ -34,8 +34,9 @@ class GetTags
         $query = Tag::query();
 
         if ($search_term) {
+            $search_key = Tag::constructKey($search_term);
             $query
-                ->where('name', 'like', "%$search_term%");
+                ->where('key', 'like', "%$search_key%");
         }
     
         return $per_page === null ?
