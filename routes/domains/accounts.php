@@ -10,17 +10,11 @@ use App\Domains\Accounts\Actions\TrashAccount;
 use App\Domains\Accounts\Actions\UpdateAccount;
 use Illuminate\Support\Facades\Route;
 
-function account_routes(): void
-{
-    Route::prefix('accounts')->group(function (): void {
-        Route::get('/', GetAccounts::class);
-        Route::get('/{id}', GetAccount::class);
-        Route::post('/create', CreateAccount::class);
-        Route::put('/update', UpdateAccount::class);
-        Route::post('/{id}/trash', TrashAccount::class);
-        Route::post('/{id}/restore', RestoreAccount::class);
-    });
-}
-
-account_routes();
-Route::middleware(['auth:sanctum'])->group(account_routes());
+Route::middleware(['auth:sanctum'])->prefix('accounts')->group(function (): void {
+    Route::get('/', GetAccounts::class);
+    Route::get('/{id}', GetAccount::class);
+    Route::post('/create', CreateAccount::class);
+    Route::put('/update', UpdateAccount::class);
+    Route::post('/{id}/trash', TrashAccount::class);
+    Route::post('/{id}/restore', RestoreAccount::class);
+});
