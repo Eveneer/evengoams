@@ -26,8 +26,10 @@ class EditRevenueStreamType
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(RevenueStreamType $revenue_stream_type, array $params): RevenueStreamType
-    {
+    public function handle(
+        RevenueStreamType $revenue_stream_type, 
+        array $params
+    ): RevenueStreamType {
         $revenue_stream_type->update($params);
         return $revenue_stream_type;
     }
@@ -39,23 +41,34 @@ class EditRevenueStreamType
         ];
     }
 
-    public function withValidator(Validator $validator, ActionRequest $request): void
-    {
+    public function withValidator(
+        Validator $validator,
+        ActionRequest $request
+    ): void {
         $validator->after(function (Validator $validator) use ($request) {
             $properties = $request->input('properties', []);
     
-            $validateProperties = function (array $properties) use (&$validateProperties, $validator) {
+            $validateProperties = function (array $properties) use (
+                &$validateProperties, $validator
+                ) {
                 foreach ($properties as $index => $property) {
     
                     if (empty($property['name'])) {
-                        $validator->errors()->add("name",'The name field is required.');
+                        $validator->errors()->add(
+                            "name",'The name field is required.'
+                        );
                     }
     
-                    if (!in_array($property['type'], RevenueStreamTypesEnum::getValues())) {
-                        $validator->errors()->add("type", 'The selected type is invalid.');
+                    if (!in_array($property['type'],
+                     RevenueStreamTypesEnum::getValues())
+                     ) {
+                        $validator->errors()->add("type",
+                         'The selected type is invalid.'
+                        );
                     }
     
-                    if ($property['type'] === 'repeater' && isset($property['properties'])) {
+                    if ($property['type'] === 'repeater'
+                     && isset($property['properties'])) {
                         $validateProperties($property['properties']);
                     }
                 }
@@ -66,13 +79,17 @@ class EditRevenueStreamType
     }
     
 
-    public function asController(RevenueStreamType $revenue_stream_type, Request $request)
-    {
+    public function asController(
+        RevenueStreamType $revenue_stream_type,
+         Request $request
+    ) {
         return $this->handle($revenue_stream_type, $request->validated());
     }
 
-    public function jsonResponse(RevenueStreamType $revenue_stream_type, Request $request): array
-    {
+    public function jsonResponse(
+        RevenueStreamType $revenue_stream_type,
+         Request $request
+    ): array {
         return [
             'message' => 'RevenueStreamType updated successfully',
         ];

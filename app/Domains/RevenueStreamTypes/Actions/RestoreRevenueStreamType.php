@@ -26,7 +26,8 @@ class RestoreRevenueStreamType
 
     public function handle(array $params): RevenueStreamType
     {
-        $revenue_stream_type = RevenueStreamType::withTrashed()->where('id', $params['id'])->first();
+        $revenue_stream_type = RevenueStreamType::withTrashed()
+            ->where('id', $params['id'])->first();
         $revenue_stream_type->restore();
 
         return $revenue_stream_type;
@@ -44,8 +45,10 @@ class RestoreRevenueStreamType
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(RevenueStreamType $revenue_stream_type, Request $request): array
-    {
+    public function jsonResponse(
+        RevenueStreamType $revenue_stream_type, 
+        Request $request
+    ): array {
         return [
             'message' => 'RevenueStreamType restored successfully',
         ];

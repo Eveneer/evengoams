@@ -41,8 +41,10 @@ class CreateRevenueStreamType
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(RevenueStreamType $revenue_stream_type, Request $request): array
-    {
+    public function jsonResponse(
+        RevenueStreamType $revenue_stream_type, 
+        Request $request
+    ): array {
         return [
             'message' => 'RevenueStreamType created successfully',
         ];
