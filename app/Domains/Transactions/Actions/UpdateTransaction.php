@@ -38,10 +38,14 @@ class EditTransaction
         $params['amount'] = $params['amount'] * 100;
         
         if ($params['fromable_type'] === Account::class)
-            AddBalance::run(['id' => $params['fromable_id'], 'amount' => -1 * $params['amount']]);
+            AddBalance::run(
+            ['id' => $params['fromable_id'], 'amount' => -1 * $params['amount']]
+        );
 
         if ($params['toable_type'] === Account::class)
-            AddBalance::run(['id' => $params['toable_id'], 'amount' => $params['amount']]);
+            AddBalance::run(
+            ['id' => $params['toable_id'], 'amount' => $params['amount']]
+        );
 
         $tag_ids = $params['tag_ids'];
         unset($params['tag_ids']);
@@ -63,12 +67,16 @@ class EditTransaction
             'author_id' => ['sometimes', 'exists:users,id'],
             'fromable_type' => [
                 'required',
-                'in:' . implode(',', [Account::class, Donor::class, RevenueStream::class])
+                'in:' . implode(
+                    ',', [Account::class, Donor::class, RevenueStream::class]
+                    )
             ],
             'fromable_id' => ['required', 'uuid'],
             'toable_type' => [
                 'required',
-                'in:' . implode(',', [Account::class, Employee::class, Vendor::class])
+                'in:' . implode(
+                    ',', [Account::class, Employee::class, Vendor::class]
+                    )
             ],
             'toable_id' => ['required', 'uuid'],
             'note' => ['sometimes', 'nullable', 'string'],
@@ -76,8 +84,10 @@ class EditTransaction
         ];
     }
 
-    public function afterValidator(Validator $validator, ActionRequest $request): void
-    {
+    public function afterValidator(
+        Validator $validator, 
+        ActionRequest $request
+    ): void {
         $fromable = $request->fromable_type;
         $toable = $request->toable_type;
 
@@ -93,8 +103,10 @@ class EditTransaction
         return $this->handle($transaction, $request->validated());
     }
 
-    public function jsonResponse(Transaction $transaction, Request $request): array
-    {
+    public function jsonResponse(
+        Transaction $transaction,
+         Request $request
+    ): array {
         return [
             'message' => 'Transaction updated successfully',
         ];

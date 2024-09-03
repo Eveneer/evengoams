@@ -26,8 +26,10 @@ class GetTransactions
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
-    {
+    public function handle(
+        ?int $per_page = 10,
+        ?string $search_term = ''
+    ): Collection | LengthAwarePaginator {
         $query = Transaction::query();
 
         if ($search_term) {
@@ -58,8 +60,10 @@ class GetTransactions
         return $this->handle($search_term, $per_page);
     }
 
-    public function jsonResponse(array $transactions, ActionRequest $request): array
-    {
+    public function jsonResponse(
+        array $transactions,
+        ActionRequest $request
+    ): array {
         $message = count($transactions) . ' transactions ';
         $message .= $request->input('search_term') ? 'found' : 'fetched';
 
