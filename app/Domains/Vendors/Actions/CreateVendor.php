@@ -41,7 +41,8 @@ class CreateVendor
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'in:' . implode(',', VendorTypesEnum::asArray())],
+            'type' => ['required', 
+                        'in:' . implode(',', VendorTypesEnum::asArray())],
             'tag_ids' => ['required', 'array'],
             'contacts' => ['nullable', 'array'],
             'contacts.*.name' => ['nullable', 'string'],
