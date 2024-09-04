@@ -37,20 +37,6 @@ class CreateTag
         return $tag;
     }
 
-    public function prepareForValidation(ActionRequest $request): void
-    {
-        $key = $request->name;
-        
-        // remove multiple spaces
-        $key = preg_replace('/\s+/', ' ', $key);
-        // convert spaces to dashes
-        $key = str_replace(' ', '-', $key);
-        // lowercase the key
-        $key = strtolower($key);
-
-        $request->merge(['key' => $key]);
-    }
-
     public function rules(): array
     {
         return [

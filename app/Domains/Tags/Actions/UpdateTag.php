@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domains\Tags\Actions;
 
 use App\Domains\Tags\Tag;
-use App\Domains\Tags\Enums\TagModelsEnum;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -27,22 +26,16 @@ class UpdateTag
 
     public function handle(Tag $tag, array $params): Tag
     {
-        $tag->update($params);
+
+    $existingTag = Tag::where('name', $params['name'])->first();
+
+    if ($existingTag) {
         return $tag;
     }
 
-    public function prepareForValidation(ActionRequest $request): void
-    {
-        $key = $request->name;
-        
-        // remove multiple spaces
-        $key = preg_replace('/\s+/', ' ', $key);
-        // convert spaces to dashes
-        $key = str_replace(' ', '-', $key);
-        // lowercase the key
-        $key = strtolower($key);
-
-        $request->merge(['key' => $key]);
+    $params['key'] = Tag::constructKey($params['name']);
+    $tag->update($params);
+    return $tag;
     }
 
     public function rules(): array
@@ -50,8 +43,6 @@ class UpdateTag
         return [
             'id' => ['required', 'exists:tags,id'],
             'name' => ['sometimes', 'string', 'max:255'],
-            'key' => ['required', 'string', 'max:255', 'unique:tags,key,' . request()->route('tag')->id],
-            'model' => ['required', 'in:' . implode(',', TagModelsEnum::getValues())],
         ];
     }
 
