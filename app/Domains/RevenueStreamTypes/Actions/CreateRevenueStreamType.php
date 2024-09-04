@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreamTypes\Actions;
 
+use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 use App\Domains\RevenueStreamTypes\RevenueStreamType;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class CreateRevenueStreamType
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
@@ -32,7 +33,11 @@ class CreateRevenueStreamType
     public function rules(): array
     {
         return [
-
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'properties' => ['required', 'array'],
+            'properties.*.name' => ['required', 'string'],
+            'properties.*.type' => ['required', 'in:' . implode(',', RevenueStreamTypesEnum::getValues())],
         ];
     }
 
