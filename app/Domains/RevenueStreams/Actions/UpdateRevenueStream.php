@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreams\Actions;
 
-use App\Domains\RevenueStreams\RevenueStream;
-use App\Domains\RevenueStreamTypes\RevenueStreamType;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Domains\RevenueStreams\RevenueStream;
+use App\Domains\RevenueStreamTypes\RevenueStreamType;
 
 class UpdateRevenueStream
 {
@@ -32,9 +33,9 @@ class UpdateRevenueStream
         return $revenue_stream;
     }
 
-    public function rules(ActionRequest $request): array
+    public function rules(): array
     {
-        $rules = [
+        return [
             'id' => ['required', 'exists:revenue_streams,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
@@ -42,17 +43,21 @@ class UpdateRevenueStream
             'values' => ['sometimes', 'array'],
         ];
 
-        if ($request->has('type_id')) {
-            $type = RevenueStreamType::find($request->type_id);
-            if ($type) {
-                foreach ($type->properties as $property) {
-                    $rules['values.' . $property['name']] = ['required', Rule::in(['single_line', 'multi_line', 'text', 'range', 'radio', 'checkbox', 'dropbox', 'repeater'])];
+    }
+
+    public function withValidator(Validator $validator, ActionRequest $request): void
+    {
+        $validator->after(function (Validator $validator) use ($request) {
+            if ($request->has('type_id')) {
+                $type = RevenueStreamType::find($request->type_id);
+                if ($type) {
+                    foreach ($type->properties as $property) {
+                        
+                    }
                 }
             }
-        }
-
-        return $rules;
-    }
+        });
+    }    
 
     public function asController(RevenueStream $revenue_stream, Request $request)
     {

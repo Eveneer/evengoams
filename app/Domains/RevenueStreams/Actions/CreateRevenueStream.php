@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreams\Actions;
 
-
 use App\Domains\RevenueStreams\RevenueStream;
 use App\Domains\RevenueStreamTypes\RevenueStreamType;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
 
 class CreateRevenueStream
 {
@@ -32,32 +33,39 @@ class CreateRevenueStream
         return RevenueStream::create($params);
     }
 
-    public function rules(ActionRequest $request): array
+    public function rules(): array
     {
-        $rules = [
+        return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'type_id' => ['required', 'exists:revenue_stream_types,id'],
             'values' => ['required', 'array'],
         ];
-
-        $type = RevenueStreamType::find($request->type_id);
-        if ($type) {
-            foreach ($type->properties as $property) {
-                $rules['values.' . $property['name']] = ['required', Rule::in(['single_line', 'multi_line', 'text', 'range', 'radio', 'checkbox', 'dropbox', 'repeater'])];
-            }
-        }
-
-        return $rules;
     }
+
+    public function withValidator(Validator $validator, ActionRequest $request): void
+    {
+        $validator->after(function (Validator $validator) use ($request) {
+            if ($request->has('type_id')) {
+                $type = RevenueStreamType::find($request->type_id);
+                if ($type) {
+                    foreach ($type->properties as $property) {
+                        
+                    }
+                }
+            }
+        });
+    }      
 
     public function asController(Request $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(RevenueStream $revenue_stream, Request $request): array
-    {
+    public function jsonResponse(
+        RevenueStream $revenue_stream, 
+        Request $request
+    ): array {
         return [
             'message' => 'RevenueStream created successfully',
         ];
