@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domains\Transactions\Actions\Queries;
 
+use App\Domains\Accounts\Actions\Queries\GetAccounts;
+use App\Domains\Donors\Actions\Queries\GetDonors;
+use App\Domains\Tags\Actions\Queries\GetTags;
 use App\Domains\Transactions\Transaction;
+use App\Domains\Vendors\Actions\Queries\GetVendors;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -26,22 +30,37 @@ class GetTransactions
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(
-        ?int $per_page = 10,
-        ?string $search_term = ''
-    ): Collection | LengthAwarePaginator {
-        $query = Transaction::query();
+    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
+    {
+        $transactions = Transaction::query();
+        
+        $tags = (new GetTags())->handle($search_term);
 
+        $donors = (new GetDonors())->handle($search_term);
+
+        $vendors = (new GetVendors())->handle($search_term);
+
+        $accounts = (new GetAccounts())->handle($search_term);
+        
         if ($search_term) {
-            $query
-                ->where('fromable_type', 'like', "%$search_term%")
-                ->orWhere('toable_type', 'like', "%$search_term%")
-                ->orWhere('note', 'like', "%$search_term%");
+            $transactions->where('note', 'like', "%$search_term%")
+                ->orWhereHas('tags', function ($query) use ($tags) {
+                    $query->whereIn('id', $tags->pluck('id'));
+                })
+                ->orWhereHas('donor', function ($query) use ($donors) {
+                    $query->whereIn('id', $donors->pluck('id'));
+                })
+                ->orWhereHas('vendor', function ($query) use ($vendors) {
+                    $query->whereIn('id', $vendors->pluck('id'));
+                })
+                ->orWhereHas('account', function ($query) use ($accounts) {
+                    $query->whereIn('id', $accounts->pluck('id'));
+                });
         }
     
         return $per_page === null ?
-            $query->get() :
-            $query->paginate($per_page);
+            $transactions->get() :
+            $transactions->paginate($per_page);
     }
 
     public function rules(): array
