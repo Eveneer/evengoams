@@ -98,7 +98,7 @@ declare(strict_types=1);
 namespace App\Domains\\$pluralised_domain\Actions;
 
 use App\Domains\\$pluralised_domain\\$domain;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -157,12 +157,12 @@ declare(strict_types=1);
 namespace App\Domains\\$pluralised_domain\Actions;
 
 use App\Domains\\$pluralised_domain\\$domain;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class Edit$domain
+class Update$domain
 {
     use AsAction;
 
@@ -217,7 +217,7 @@ declare(strict_types=1);
 namespace App\Domains\\$pluralised_domain\Actions;
 
 use App\Domains\\$pluralised_domain\\$domain;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -270,7 +270,7 @@ declare(strict_types=1);
 namespace App\Domains\\$pluralised_domain\Actions;
 
 use App\Domains\\$pluralised_domain\\$domain;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

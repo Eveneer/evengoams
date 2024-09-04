@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class EditRevenueStreamType
+
+class UpdateRevenueStreamType
 {
     use AsAction;
 
@@ -18,7 +19,7 @@ class EditRevenueStreamType
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
@@ -33,7 +34,10 @@ class EditRevenueStreamType
     public function rules(): array
     {
         return [
-
+            'id' => ['required', 'exists:revenue_stream_types,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'properties' => ['required', 'array'],
         ];
     }
 

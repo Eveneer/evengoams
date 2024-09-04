@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Tags\Actions;
+namespace App\Domains\Tags\Actions\Queries;
 
 use App\Domains\Tags\Tag;
 use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class TrashTag
+class GetTag
 {
     use AsAction;
 
@@ -17,15 +17,16 @@ class TrashTag
     {
         $user = $request->user();
         
-        if ($user && $user->has_general_access)
+        if ($user->has_general_access) {
             return Response::allow();
+        }
 
-        return Response::deny('You are unauthorised to perform this action');
+        return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(Tag $tag): bool
+    public function handle(string $id): Tag | null
     {
-        return $tag->delete();
+        return Tag::find($id);
     }
 
     public function rules(): array
@@ -35,17 +36,16 @@ class TrashTag
         ];
     }
 
-    public function asController(Tag $tag)
+    public function asController(ActionRequest $request)
     {
-        return $this->handle($tag);
+        return $this->handle($request->get('id'));
     }
 
-    public function jsonResponse(bool $deleted): array
+    public function jsonResponse(Tag $tag): array
     {
-        $success = $deleted ? 'successful' : 'unsuccessful';
-
         return [
-            'message' => "Tag delete $success",
+            'data' => $tag,
+            'message' => 'Tag retrieved successfully',
         ];
     }
 }

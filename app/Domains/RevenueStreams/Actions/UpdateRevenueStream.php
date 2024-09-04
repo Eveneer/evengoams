@@ -12,8 +12,7 @@ use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-
-class EditRevenueStream
+class UpdateRevenueStream
 {
     use AsAction;
 
@@ -21,7 +20,7 @@ class EditRevenueStream
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
