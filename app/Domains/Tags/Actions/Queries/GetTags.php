@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Accounts\Actions\Queries;
+namespace App\Domains\Tags\Actions\Queries;
 
-use App\Domains\Accounts\Account;
-use Illuminate\Auth\Access\Response;
+use App\Domains\Tags\Tag;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class GetAccounts
+
+class GetTags
 {
     use AsAction;
 
@@ -19,21 +20,23 @@ class GetAccounts
     {
         $user = $request->user();
         
-        if ($user && $user->has_general_access) {
+        if ($user->has_general_access) {
             return Response::allow();
         }
 
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
-    {
-        $query = Account::query();
+    public function handle(
+        ?int $per_page = 10, 
+        ?string $search_term = ''
+    ): Collection | LengthAwarePaginator {
+        $query = Tag::query();
 
         if ($search_term) {
+            $search_key = Tag::constructKey($search_term);
             $query
-                ->where('name', 'like', "%$search_term%")
-                ->orWhere('details', 'like', "%$search_term%");
+                ->where('key', 'like', "%$search_key%");
         }
     
         return $per_page === null ?
@@ -57,13 +60,13 @@ class GetAccounts
         return $this->handle($per_page, $search_term);
     }
 
-    public function jsonResponse(array $accounts, ActionRequest $request): array
+    public function jsonResponse(array $tags, ActionRequest $request): array
     {
-        $message = count($accounts) . ' accounts ';
+        $message = count($tags) . ' tags ';
         $message .= $request->input('search_term') ? 'found' : 'fetched';
 
         return [
-            'data' => $accounts,
+            'data' => $tags,
             'message' => $message . ' successfully',
         ];
     }

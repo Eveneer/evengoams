@@ -17,7 +17,7 @@ class TrashRevenueStreamType
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
@@ -26,6 +26,13 @@ class TrashRevenueStreamType
     public function handle(RevenueStreamType $revenue_stream_type): bool
     {
         return $revenue_stream_type->delete();
+    }
+
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:revenue_stream_types,id'],
+        ];
     }
 
     public function asController(RevenueStreamType $revenue_stream_type)
