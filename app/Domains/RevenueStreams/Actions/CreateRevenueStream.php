@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreams\Actions;
 
-use App\Domains\RevenueStreams\RevenueStream;
-use App\Domains\RevenueStreamTypes\RevenueStreamType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Domains\RevenueStreams\RevenueStream;
+use App\Domains\RevenueStreamTypes\RevenueStreamType;
+use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 
 
 class CreateRevenueStream
@@ -49,13 +50,15 @@ class CreateRevenueStream
             if ($request->has('type_id')) {
                 $type = RevenueStreamType::find($request->type_id);
                 if ($type) {
-                    foreach ($type->properties as $property) {
-                        
+                    $values = $request->input('values', []);
+                    foreach ($values as $value) {
+                        $rules[$value['type']] = ['required',
+                         'in:' . implode(',', RevenueStreamTypesEnum::getValues())];
+                        }
                     }
                 }
-            }
-        });
-    }      
+            });
+    }     
 
     public function asController(Request $request)
     {
