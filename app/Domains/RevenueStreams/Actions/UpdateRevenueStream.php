@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreams\Actions;
 
+use App\Domains\RevenueStreams\RevenueStream;
+use App\Domains\RevenueStreamTypes\RevenueStreamType;
+use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Domains\RevenueStreams\RevenueStream;
-use App\Domains\RevenueStreamTypes\RevenueStreamType;
-use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 
 class UpdateRevenueStream
 {
