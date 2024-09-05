@@ -56,7 +56,7 @@ class GetVendors
         $search_term = $request->input('search_term');
         $per_page = $request->input('per_page');
 
-        return $this->handle($search_term, $per_page);
+        return $this->handle($per_page, $search_term);
     }
 
     public function jsonResponse(array $vendors, ActionRequest $request): array
