@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('type_id')->references('id')->on('revenue_stream_types');
             $table->json('values');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

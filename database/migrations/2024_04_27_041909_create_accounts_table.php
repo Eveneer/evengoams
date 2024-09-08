@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('type', AccountTypesEnum::getValues());
             $table->json('details');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
