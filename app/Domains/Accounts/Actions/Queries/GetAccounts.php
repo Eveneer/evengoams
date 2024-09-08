@@ -57,7 +57,7 @@ class GetAccounts
         return $this->handle($per_page, $search_term);
     }
 
-    public function jsonResponse(array $accounts, ActionRequest $request): array
+    public function jsonResponse(Collection | LengthAwarePaginator $accounts, ActionRequest $request): array
     {
         $message = count($accounts) . ' accounts ';
         $message .= $request->input('search_term') ? 'found' : 'fetched';
