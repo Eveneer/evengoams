@@ -235,14 +235,16 @@ class Trash$domain
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle($domain \$$var_name): bool
+    public function handle(string \$id): bool
     {
+        \$$var_name = $domain::find(\$id);
+
         return \${$var_name}->delete();
     }
 
-    public function asController($domain \$$var_name)
+    public function asController(ActionRequest \$request)
     {
-        return \$this->handle(\$$var_name);
+        return \$this->handle(\$request->id);
     }
 
     public function jsonResponse(bool \$deleted): array
@@ -331,10 +333,11 @@ namespace App\Domains\\$pluralised_domain;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class $domain extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
 }
 ";
     }
