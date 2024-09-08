@@ -242,9 +242,9 @@ class Trash$domain
         return \${$var_name}->delete();
     }
 
-    public function asController(ActionRequest \$request)
+    public function asController(string \$id)
     {
-        return \$this->handle(\$request->id);
+        return \$this->handle(\$id);
     }
 
     public function jsonResponse(bool \$deleted): array
