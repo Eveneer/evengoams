@@ -24,9 +24,14 @@ class UpdateRevenueStream
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(RevenueStream $revenue_stream, array $params): RevenueStream
+    public function handle(string $id, array $params): RevenueStream
     {
-        $revenue_stream->update($params);
+        $revenue_stream = RevenueStream::findOrFail($id);
+        $revenue_stream->name = $params['name'] ?? $revenue_stream->name;
+        $revenue_stream->description = $params['description'] ?? $revenue_stream->description;
+        $revenue_stream->values = $params['values'] ?? $revenue_stream->values;
+        $revenue_stream->save();
+
         return $revenue_stream;
     }
 
@@ -41,9 +46,9 @@ class UpdateRevenueStream
         ];
     }
 
-    public function asController(RevenueStream $revenue_stream, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
-        return $this->handle($revenue_stream, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(RevenueStream $revenue_stream, Request $request): array
