@@ -24,12 +24,11 @@ class RestoreVendor
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): Vendor
+    public function handle(array $params): bool
     {
         $vendor = Vendor::withTrashed()->where('id', $params['id'])->first();
-        $vendor->restore();
 
-        return $vendor;
+        return $vendor->restore();
     }
 
     public function rules(): array
@@ -39,15 +38,17 @@ class RestoreVendor
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(Vendor $vendor, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'Vendor restored successfully',
+            'message' => "Vendor restore $success",
         ];
     }
 }
