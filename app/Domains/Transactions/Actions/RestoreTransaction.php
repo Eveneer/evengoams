@@ -24,12 +24,11 @@ class RestoreTransaction
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): Transaction
+    public function handle(array $params): bool
     {
         $transaction = Transaction::withTrashed()->where('id', $params['id'])->first();
-        $transaction->restore();
 
-        return $transaction;
+        return $transaction->restore();
     }
 
     public function rules(): array
@@ -39,15 +38,17 @@ class RestoreTransaction
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(Transaction $transaction, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'Transaction restored successfully',
+            'message' => "Transaction restore $success",
         ];
     }
 }
