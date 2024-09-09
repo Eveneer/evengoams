@@ -28,7 +28,7 @@ class GetDonors
 
     public function handle(
         ?int $per_page = 10,
-         ?string $search_term = ''
+        ?string $search_term = ''
     ): Collection | LengthAwarePaginator {
         $query = Donor::query();
 
@@ -36,10 +36,10 @@ class GetDonors
             $query
                 ->where('name', 'like', "%$search_term%")
                 ->orWhere('details', 'like', "%$search_term%")
-                ->orWhere('phone', 'like', '%' . $search_term . '%')
-                ->orWhere('email', 'like', '%' . $search_term . '%')
-                ->orWhere('address', 'like', '%' . $search_term . '%')
-                ->orWhere('details', 'like', '%' . $search_term . '%');
+                ->orWhere('phone', 'like', "%$search_term%")
+                ->orWhere('email', 'like', "%$search_term%")
+                ->orWhere('address', 'like', "%$search_term%")
+                ->orWhere('details', 'like', "%$search_term%");
         }
     
         return $per_page === null ?
@@ -57,10 +57,10 @@ class GetDonors
 
     public function asController(ActionRequest $request)
     {
-        $search_term = $request->input('search_term');
-        $per_page = $request->input('per_page');
-
-        return $this->handle($per_page, $search_term);
+        return $this->handle(
+            $request->input('per_page'),
+            $request->input('search_term'),
+        );
     }
 
     public function jsonResponse(array $donors, ActionRequest $request): array
