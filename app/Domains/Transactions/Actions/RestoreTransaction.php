@@ -6,7 +6,6 @@ namespace App\Domains\Transactions\Actions;
 
 use App\Domains\Transactions\Transaction;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
