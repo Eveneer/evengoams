@@ -24,9 +24,11 @@ class UpdateEmployee
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Employee $employee, array $params): Employee
+    public function handle(string $id, array $params): Employee
     {
+        $employee = Employee::findOrFail($id);
         $employee->update($params);
+
         return $employee;
     }
 
@@ -44,9 +46,9 @@ class UpdateEmployee
         ];
     }
 
-    public function asController(Employee $employee, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
-        return $this->handle($employee, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Employee $employee, Request $request): array
