@@ -24,8 +24,9 @@ class UpdateDonor
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Donor $donor, array $params): Donor
+    public function handle(string $id, array $params): Donor
     {
+        $donor = Donor::findOrFail($id);
         $donor->update($params);
         return $donor;
     }
@@ -43,9 +44,9 @@ class UpdateDonor
         ];
     }
 
-    public function asController(Donor $donor, ActionRequest $request)
+    public function asController(string $id, ActionRequest $request)
     {
-        return $this->handle($donor, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Donor $donor, Request $request): array
