@@ -24,12 +24,11 @@ class RestoreRevenueStream
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): RevenueStream
+    public function handle(array $params): bool
     {
         $revenue_stream = RevenueStream::withTrashed()->where('id', $params['id'])->first();
-        $revenue_stream->restore();
 
-        return $revenue_stream;
+        return $revenue_stream->restore();
     }
 
     public function rules(): array
@@ -39,15 +38,17 @@ class RestoreRevenueStream
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(RevenueStream $revenue_stream, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'RevenueStream restored successfully',
+            'message' => "RevenueStream restore $success",
         ];
     }
 }
