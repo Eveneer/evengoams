@@ -51,16 +51,16 @@ class GetAccounts
 
     public function asController(ActionRequest $request)
     {
-        $search_term = $request->input('search_term');
-        $per_page = $request->input('per_page');
-
-        return $this->handle($per_page, $search_term);
+        return $this->handle(
+            $request->per_page,
+            $request->search_term,
+        );
     }
 
     public function jsonResponse(Collection | LengthAwarePaginator $accounts, ActionRequest $request): array
     {
         $message = count($accounts) . ' accounts ';
-        $message .= $request->input('search_term') ? 'found' : 'fetched';
+        $message .= $request->search_term ? 'found' : 'fetched';
 
         return [
             'data' => $accounts,

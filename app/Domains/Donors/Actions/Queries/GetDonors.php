@@ -58,15 +58,15 @@ class GetDonors
     public function asController(ActionRequest $request)
     {
         return $this->handle(
-            $request->input('per_page'),
-            $request->input('search_term'),
+            $request->per_page,
+            $request->search_term,
         );
     }
 
     public function jsonResponse(array $donors, ActionRequest $request): array
     {
         $message = count($donors) . ' donors ';
-        $message .= $request->input('search_term') ? 'found' : 'fetched';
+        $message .= $request->search_term ? 'found' : 'fetched';
 
         return [
             'data' => $donors,
