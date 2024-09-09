@@ -30,8 +30,9 @@ class UpdateTransaction
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Transaction $transaction, array $params): Transaction
+    public function handle(string $id, array $params): Transaction
     {
+        $transaction = Transaction::findOrFail($id);
         $transaction->update($params);
         return $transaction;
     }
@@ -70,9 +71,9 @@ class UpdateTransaction
             $validator->errors()->add('toable_id', 'Invalid toable selected');
     }
 
-    public function asController(Transaction $transaction, Request $request)
+    public function asController(string $id, Request $request)
     {
-        return $this->handle($transaction, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Transaction $transaction, Request $request): array
