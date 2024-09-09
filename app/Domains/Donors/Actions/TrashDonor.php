@@ -37,7 +37,7 @@ class TrashDonor
         ];
     }
 
-    public function asController(String $id)
+    public function asController(string $id)
     {
         return $this->handle($id);
     }
