@@ -25,9 +25,11 @@ class UpdatePledge
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Pledge $pledge, array $params): Pledge
+    public function handle(string $id, array $params): Pledge
     {
+        $pledge = Pledge::findOrFail($id);
         $pledge->update($params);
+
         return $pledge;
     }
 
@@ -42,9 +44,9 @@ class UpdatePledge
         ];
     }
 
-    public function asController(Pledge $pledge, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
-        return $this->handle($pledge, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Pledge $pledge, Request $request): array
