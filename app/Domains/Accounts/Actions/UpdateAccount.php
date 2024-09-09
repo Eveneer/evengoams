@@ -25,9 +25,14 @@ class UpdateAccount
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Account $account, array $params): Account
+    public function handle(string $id, array $params): Account
     {
-        $account->update($params);
+        $account = Account::findOrFail($id);
+        $account->name = $params['name'] ?? $account->name;
+        $account->type = $params['type'] ?? $account->type;
+        $account->details = $params['details'] ?? $account->details;
+        $account->save();
+
         return $account;
     }
 
@@ -42,9 +47,9 @@ class UpdateAccount
         ];
     }
 
-    public function asController(Account $account, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
-        return $this->handle($account, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Account $account, Request $request): array
