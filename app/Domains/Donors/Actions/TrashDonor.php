@@ -23,8 +23,10 @@ class TrashDonor
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Donor $donor): bool
+    public function handle(string $id): bool
     {
+        $donor = Donor::findOrFail($id);
+
         return $donor->delete();
     }
 
@@ -35,9 +37,9 @@ class TrashDonor
         ];
     }
 
-    public function asController(Donor $donor)
+    public function asController(string $id)
     {
-        return $this->handle($donor);
+        return $this->handle($id);
     }
 
     public function jsonResponse(bool $deleted): array
