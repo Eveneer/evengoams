@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\RevenueStreams\Actions;
 
 use App\Domains\RevenueStreams\RevenueStream;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -17,7 +17,7 @@ class TrashRevenueStream
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->json('properties');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('is_individual');
             $table->json('details');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

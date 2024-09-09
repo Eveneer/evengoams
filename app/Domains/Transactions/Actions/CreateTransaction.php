@@ -12,7 +12,7 @@ use App\Domains\RevenueStreams\RevenueStream;
 use App\Domains\Tags\Actions\CreateTags;
 use App\Domains\Transactions\Transaction;
 use App\Domains\Vendors\Vendor;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
@@ -26,7 +26,7 @@ class CreateTransaction
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Domains\Users\Actions;
 
 use App\Domains\Users\User;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class EditUser
+class UpdateUser
 {
     use AsAction;
 
@@ -18,7 +18,7 @@ class EditUser
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');

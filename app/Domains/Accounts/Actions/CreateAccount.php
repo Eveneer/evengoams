@@ -6,7 +6,7 @@ namespace App\Domains\Accounts\Actions;
 
 use App\Domains\Accounts\Account;
 use App\Domains\Accounts\Enums\AccountTypesEnum;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -19,7 +19,7 @@ class CreateAccount
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
@@ -40,7 +40,7 @@ class CreateAccount
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }

@@ -6,7 +6,7 @@ namespace App\Domains\Pledges\Actions;
 
 use App\Domains\Pledges\Pledge;
 use App\Domains\Pledges\Enums\PledgeRecursEnum;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -19,7 +19,7 @@ class CreatePledge
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');

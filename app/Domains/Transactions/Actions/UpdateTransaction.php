@@ -10,13 +10,13 @@ use App\Domains\Employees\Employee;
 use App\Domains\RevenueStreams\RevenueStream;
 use App\Domains\Transactions\Transaction;
 use App\Domains\Vendors\Vendor;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class EditTransaction
+class UpdateTransaction
 {
     use AsAction;
 
@@ -24,14 +24,15 @@ class EditTransaction
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Transaction $transaction, array $params): Transaction
+    public function handle(string $id, array $params): Transaction
     {
+        $transaction = Transaction::findOrFail($id);
         $transaction->update($params);
         return $transaction;
     }
@@ -70,9 +71,9 @@ class EditTransaction
             $validator->errors()->add('toable_id', 'Invalid toable selected');
     }
 
-    public function asController(Transaction $transaction, Request $request)
+    public function asController(string $id, Request $request)
     {
-        return $this->handle($transaction, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Transaction $transaction, Request $request): array
