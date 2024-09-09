@@ -28,10 +28,7 @@ class UpdateVendor
     public function handle(string $id, array $params): Vendor
     {
         $vendor = Vendor::findOrFail($id);
-        $vendor->name = $params['name'] ?? $vendor->name;
-        $vendor->type = $params['type'] ?? $vendor->type;
-        $vendor->contacts = $params['contacts'] ?? $vendor->contacts;
-        $vendor->save();
+        $vendor->update($params);
 
         return $vendor;
     }
