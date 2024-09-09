@@ -34,16 +34,16 @@ class UpdateDonor
     {
         return [
             'id' => ['required', 'exists:donors,id'],
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'email', 'max:255'],
             'phone' => ['nullable', 'string'],
             'address' => ['nullable', 'string', 'max:255'],
             'is_individual' => ['required', 'boolean'],
-            'details' => ['required', 'json'],
+            'details' => ['sometimes', 'json'],
         ];
     }
 
-    public function asController(Donor $donor, Request $request)
+    public function asController(Donor $donor, ActionRequest $request)
     {
         return $this->handle($donor, $request->validated());
     }
