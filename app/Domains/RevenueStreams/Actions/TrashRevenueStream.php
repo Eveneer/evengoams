@@ -25,9 +25,9 @@ class TrashRevenueStream
 
     public function handle(string $id): bool
     {
-        $revenuestream = RevenueStream::findOrFail($id);
+        $revenue_stream = RevenueStream::findOrFail($id);
 
-        return $revenuestream->delete();
+        return $revenue_stream->delete();
     }
 
     public function asController(string $id)
