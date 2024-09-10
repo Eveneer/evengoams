@@ -41,8 +41,7 @@ class EditVendor
         return [
             'id' => ['required', 'exists:vendors,id'],
             'name' => ['sometimes', 'string', 'max:255'],
-            'type' => ['sometimes', 
-                        'in:' . implode(',', VendorTypesEnum::asArray())],
+            'type' => ['sometimes', 'in:' . implode(',', VendorTypesEnum::asArray())],
             'tag_ids' => ['sometimes', 'nullable', 'array'],
             'tag_ids.*' => ['exists:tags,id'],
             'contacts' => ['nullable', 'array'],
