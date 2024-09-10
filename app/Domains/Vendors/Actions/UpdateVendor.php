@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domains\Vendors\Actions;
 
-use App\Domains\Vendors\Vendor;
+use App\Domains\Tags\Actions\CreateTags;
 use App\Domains\Vendors\Enums\VendorTypesEnum;
+use App\Domains\Vendors\Vendor;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -28,7 +29,11 @@ class UpdateVendor
     public function handle(string $id, array $params): Vendor
     {
         $vendor = Vendor::findOrFail($id);
+        $tag_ids = $params['tag_ids'];
+        unset($params['tag_ids']);
+        $tag_ids = CreateTags::run($tag_ids);
         $vendor->update($params);
+        $vendor->tags()->sync($tag_ids);
 
         return $vendor;
     }
