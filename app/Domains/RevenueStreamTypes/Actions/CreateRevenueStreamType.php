@@ -36,12 +36,10 @@ class CreateRevenueStreamType
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'properties' => ['required', 'array'],
-            'properties.*.name' => ['required', 'string'],
-            'properties.*.type' => ['required', 'in:' . implode(',', RevenueStreamTypesEnum::getValues())],
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
