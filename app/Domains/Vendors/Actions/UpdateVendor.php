@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domains\Vendors\Actions;
 
-use App\Domains\Tags\Actions\CreateTags;
 use App\Domains\Vendors\Enums\VendorTypesEnum;
 use App\Domains\Vendors\Vendor;
 use Illuminate\Auth\Access\Response;
