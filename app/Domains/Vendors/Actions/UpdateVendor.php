@@ -29,11 +29,7 @@ class UpdateVendor
     public function handle(string $id, array $params): Vendor
     {
         $vendor = Vendor::findOrFail($id);
-        $tag_ids = $params['tag_ids'];
-        unset($params['tag_ids']);
-        $tag_ids = CreateTags::run($tag_ids);
         $vendor->update($params);
-        $vendor->tags()->sync($tag_ids);
 
         return $vendor;
     }
