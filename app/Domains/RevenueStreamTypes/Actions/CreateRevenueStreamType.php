@@ -36,6 +36,8 @@ class CreateRevenueStreamType
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'properties' => ['required', 'array'],
+            'properties.*.name' => ['required', 'string'],
+            'properties.*.type' => ['required', 'in:' . implode(',', RevenueStreamTypesEnum::getValues())],
         ];
     }
 
