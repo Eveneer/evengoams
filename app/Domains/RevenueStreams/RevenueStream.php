@@ -10,4 +10,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class RevenueStream extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'type_id',
+        'values',
+    ];
+
+    protected $casts = [
+        'values' => 'array',
+    ];
 }

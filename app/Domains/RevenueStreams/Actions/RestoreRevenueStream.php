@@ -6,7 +6,6 @@ namespace App\Domains\RevenueStreams\Actions;
 
 use App\Domains\RevenueStreams\RevenueStream;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 

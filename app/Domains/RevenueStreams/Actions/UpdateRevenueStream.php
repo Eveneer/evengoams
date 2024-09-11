@@ -27,10 +27,7 @@ class UpdateRevenueStream
     public function handle(string $id, array $params): RevenueStream
     {
         $revenue_stream = RevenueStream::findOrFail($id);
-        $revenue_stream->name = $params['name'] ?? $revenue_stream->name;
-        $revenue_stream->description = $params['description'] ?? $revenue_stream->description;
-        $revenue_stream->values = $params['values'] ?? $revenue_stream->values;
-        $revenue_stream->save();
+        $revenue_stream->update($params);
 
         return $revenue_stream;
     }
