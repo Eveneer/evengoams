@@ -36,26 +36,48 @@ class UpdateTransaction
     public function handle(string $id, array $params): Transaction
     {
         $transaction = Transaction::findOrFail($id);
-        $params['amount'] = $params['amount'] * 100;
         
-        if ($params['fromable_type'] === Account::class)
-            AddBalance::run(
-            ['id' => $params['fromable_id'], 'amount' => -1 * $params['amount']]
-        );
+        if (isset($params['amount'])) {
 
-        if ($params['toable_type'] === Account::class)
-            AddBalance::run(
-            ['id' => $params['toable_id'], 'amount' => $params['amount']]
-        );
+            if ($params['fromable_type'] === Account::class) {
+                AddBalance::run(
+                ['id' => $params['fromable_id'], 'amount' => Transaction::find($id)->amount]
+                );
+            }
 
-        $tag_ids = $params['tag_ids'];
-        unset($params['tag_ids']);
-        $tag_ids = CreateTags::run($tag_ids);
+            if ($params['toable_type'] === Account::class) {
+                AddBalance::run(
+                ['id' => $params['toable_id'], 'amount' => -1 * Transaction::find($id)->amount]
+                );
+            }    
+        }
+
+        if (isset($params['tag_ids'])) {  
+            $tag_ids = $params['tag_ids'];
+            unset($params['tag_ids']);
+            $tag_ids = CreateTags::run($tag_ids);
+        }
 
         $transaction->update($params);
 
+        if (isset($params['amount'])) {
+            $params['amount'] = $params['amount'] * 100;
+
+            if ($params['fromable_type'] === Account::class) {
+                AddBalance::run(
+                ['id' => $params['fromable_id'], 'amount' => -1 * $params['amount']]
+                );
+            }
+
+            if ($params['toable_type'] === Account::class) {
+                    AddBalance::run(
+                    ['id' => $params['toable_id'], 'amount' => $params['amount']]
+                );
+            }
+        }
+
         $transaction->tags()->sync($tag_ids);
-          
+            
         return $transaction;
     }
 
