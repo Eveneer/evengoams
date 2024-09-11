@@ -24,12 +24,11 @@ class RestoreDonor
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): Donor
+    public function handle(array $params): bool
     {
         $donor = Donor::withTrashed()->where('id', $params['id'])->first();
-        $donor->restore();
 
-        return $donor;
+        return $donor->restore();
     }
 
     public function rules(): array
@@ -39,15 +38,17 @@ class RestoreDonor
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(Donor $donor, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'Donor restored successfully',
+            'message' => "Donor restore $success",
         ];
     }
 }

@@ -24,12 +24,11 @@ class RestoreAccount
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): Account
+    public function handle(array $params): bool
     {
         $account = Account::withTrashed()->where('id', $params['id'])->first();
-        $account->restore();
 
-        return $account;
+        return $account->restore();
     }
 
     public function rules(): array
@@ -39,15 +38,17 @@ class RestoreAccount
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(Account $account, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'Account restored successfully',
+            'message' => "Account restoration was $success",
         ];
     }
 }

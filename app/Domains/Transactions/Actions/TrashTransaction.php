@@ -26,8 +26,10 @@ class TrashTransaction
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Transaction $transaction): bool
+    public function handle(string $id): bool
     {
+        $transaction = Transaction::findOrFail($id);
+        
         if ($transaction->fromable_type === Account::class) {
             AddBalance::run([
                 'id' => $transaction->fromable_id, 
@@ -43,8 +45,7 @@ class TrashTransaction
         }
         
         $transaction->tags()->detach();
-        
-        
+
         return $transaction->delete();
     }
 
@@ -56,9 +57,9 @@ class TrashTransaction
     }
 
 
-    public function asController(Transaction $transaction)
+    public function asController(string $id)
     {
-        return $this->handle($transaction);
+        return $this->handle($id);
     }
 
     public function jsonResponse(bool $deleted): array
