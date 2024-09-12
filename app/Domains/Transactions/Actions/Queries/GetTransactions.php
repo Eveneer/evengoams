@@ -84,7 +84,6 @@ class GetTransactions
         $message .= $request->search_term ? 'found' : 'fetched';
 
         return [
-            'data' => $transactions,
             'message' => $message . ' successfully',
         ];
     }
