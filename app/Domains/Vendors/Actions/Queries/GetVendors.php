@@ -62,7 +62,6 @@ class GetVendors
         $message .= $request->search_term ? 'found' : 'fetched';
 
         return [
-            'data' => $vendors,
             'message' => $message . ' successfully',
         ];
     }
