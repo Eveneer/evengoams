@@ -44,7 +44,6 @@ class GetVendor
     public function jsonResponse(Vendor $vendor): array
     {
         return [
-            'data' => $vendor,
             'message' => 'Vendor retrieved successfully',
         ];
     }
