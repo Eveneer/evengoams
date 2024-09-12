@@ -32,7 +32,7 @@ class GetVendor
     public function rules(): array
     {
         return [
-            'id' => ['required', 'exists:donors,id'],
+            'id' => ['required', 'exists:vendors,id'],
         ];
     }
 
