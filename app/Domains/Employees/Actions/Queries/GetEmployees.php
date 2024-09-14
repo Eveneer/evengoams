@@ -26,8 +26,10 @@ class GetEmployees
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
-    {
+    public function handle(
+        ?int $per_page = 10, 
+        ?string $search_term = ''
+    ): Collection | LengthAwarePaginator {
         $query = Employee::query();
 
         if ($search_term) {
@@ -60,8 +62,10 @@ class GetEmployees
         );
     }
 
-    public function jsonResponse(Collection | LengthAwarePaginator $employees, ActionRequest $request): array
-    {
+    public function jsonResponse(
+        Collection | LengthAwarePaginator $employees, 
+        ActionRequest $request
+    ): array {
         $message = count($employees) . ' employees ';
         $message .= $request->search_term ? 'found' : 'fetched';
 
