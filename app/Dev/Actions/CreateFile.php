@@ -99,7 +99,6 @@ namespace App\Domains\\$pluralised_domain\Actions;
 
 use App\Domains\\$pluralised_domain\\$domain;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -129,12 +128,12 @@ class Create$domain
         ];
     }
 
-    public function asController(Request \$request)
+    public function asController(ActionRequest \$request)
     {
         return \$this->handle(\$request->validated());
     }
 
-    public function jsonResponse($domain \$$var_name, Request \$request): array
+    public function jsonResponse($domain \$$var_name): array
     {
         return [
             'message' => '$domain created successfully',
@@ -158,7 +157,6 @@ namespace App\Domains\\$pluralised_domain\Actions;
 
 use App\Domains\\$pluralised_domain\\$domain;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -176,9 +174,11 @@ class Update$domain
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle($domain \$$var_name, array \$params): $domain
+    public function handle(string \$id, array \$params): $domain
     {
+        \$$var_name = $domain::findOrFail(\$id);
         \${$var_name}->update(\$params);
+
         return \$$var_name;
     }
 
@@ -189,12 +189,12 @@ class Update$domain
         ];
     }
 
-    public function asController($domain \$$var_name, Request \$request)
+    public function asController(string \$id, ActionRequest \$request)
     {
-        return \$this->handle(\$$var_name, \$request->validated());
+        return \$this->handle(\$id, \$request->validated());
     }
 
-    public function jsonResponse($domain \$$var_name, Request \$request): array
+    public function jsonResponse($domain \$$var_name): array
     {
         return [
             'message' => '$domain updated successfully',
@@ -235,14 +235,16 @@ class Trash$domain
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle($domain \$$var_name): bool
+    public function handle(string \$id): bool
     {
+        \$$var_name = $domain::find(\$id);
+
         return \${$var_name}->delete();
     }
 
-    public function asController($domain \$$var_name)
+    public function asController(string \$id)
     {
-        return \$this->handle(\$$var_name);
+        return \$this->handle(\$id);
     }
 
     public function jsonResponse(bool \$deleted): array
@@ -271,7 +273,6 @@ namespace App\Domains\\$pluralised_domain\Actions;
 
 use App\Domains\\$pluralised_domain\\$domain;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -304,15 +305,17 @@ class Restore$domain
         ];
     }
 
-    public function asController(Request \$request)
+    public function asController(ActionRequest \$request)
     {
         return \$this->handle(\$request->validated());
     }
 
-    public function jsonResponse($domain \$$var_name, Request \$request): array
+    public function jsonResponse(bool \$restored): array
     {
+        \$success = \$restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => '$domain restored successfully',
+            'message' => \"$domain restoration was \$success\",
         ];
     }
 }
@@ -331,10 +334,11 @@ namespace App\Domains\\$pluralised_domain;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class $domain extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
 }
 ";
     }

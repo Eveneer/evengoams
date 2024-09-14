@@ -2,15 +2,16 @@
 
 namespace App\Domains\RevenueStreams;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Domains\RevenueStreamTypes\RevenueStreamType;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RevenueStream extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -27,4 +28,5 @@ class RevenueStream extends Model
     {
         return $this->belongsTo(RevenueStreamType::class, 'type_id');
     }
+
 }

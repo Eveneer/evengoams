@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('recurs', PledgeRecursEnum::getValues());
             $table->date('due_date')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

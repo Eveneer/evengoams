@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Donors\Actions;
+namespace App\Domains\Donors\Actions\Queries;
 
 use App\Domains\Donors\Donor;
 use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class TrashDonor
+class GetDonor
 {
     use AsAction;
 
@@ -17,17 +17,16 @@ class TrashDonor
     {
         $user = $request->user();
         
-        if ($user && $user->has_general_access)
+        if ($user->has_general_access) {
             return Response::allow();
+        }
 
-        return Response::deny('You are unauthorised to perform this action');
+        return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(string $id): bool
+    public function handle(string $id): Donor | null
     {
-        $donor = Donor::findOrFail($id);
-
-        return $donor->delete();
+        return Donor::find($id);
     }
 
     public function rules(): array
@@ -37,17 +36,16 @@ class TrashDonor
         ];
     }
 
-    public function asController(string $id)
+    public function asController(ActionRequest $request)
     {
-        return $this->handle($id);
+        return $this->handle($request->get('id'));
     }
 
-    public function jsonResponse(bool $deleted): array
+    public function jsonResponse(Donor $donor): array
     {
-        $success = $deleted ? 'successful' : 'unsuccessful';
-
         return [
-            'message' => "Donor delete $success",
+            'data' => $donor,
+            'message' => 'Donor retrieved successfully',
         ];
     }
 }
