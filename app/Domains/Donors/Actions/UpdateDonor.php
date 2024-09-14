@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class EditDonor
+class UpdateDonor
 {
     use AsAction;
 
@@ -18,14 +18,15 @@ class EditDonor
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Donor $donor, array $params): Donor
+    public function handle(string $id, array $params): Donor
     {
+        $donor = Donor::findOrFail($id);
         $donor->update($params);
         return $donor;
     }
@@ -34,18 +35,18 @@ class EditDonor
     {
         return [
             'id' => ['required', 'exists:donors,id'],
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'email', 'max:255'],
             'phone' => ['nullable', 'string'],
             'address' => ['nullable', 'string', 'max:255'],
             'is_individual' => ['required', 'boolean'],
-            'details' => ['required', 'json'],
+            'details' => ['sometimes', 'json'],
         ];
     }
 
-    public function asController(Donor $donor, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
-        return $this->handle($donor, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Donor $donor, Request $request): array

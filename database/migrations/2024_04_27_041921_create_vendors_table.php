@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('type', VendorTypesEnum::getValues());
             $table->json('contacts')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->json('value');
             $table->enum('access_level', ConfigAccessLevelsEnum::getValues());
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

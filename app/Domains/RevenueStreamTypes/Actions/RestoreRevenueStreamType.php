@@ -18,7 +18,7 @@ class RestoreRevenueStreamType
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
@@ -36,7 +36,7 @@ class RestoreRevenueStreamType
     public function rules(): array
     {
         return [
-            'id' => ['exists:']
+            'id' => ['required', 'exists:revenue_stream_types,id'],
         ];
     }
 

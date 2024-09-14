@@ -17,20 +17,22 @@ class TrashAccount
     {
         $user = $request->user();
         
-        if ($user->has_general_access)
+        if ($user && $user->has_general_access)
             return Response::allow();
 
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Account $account): bool
+    public function handle(string $id): bool
     {
+        $account = Account::findOrFail($id);
+
         return $account->delete();
     }
 
-    public function asController(Account $account)
+    public function asController(string $id)
     {
-        return $this->handle($account);
+        return $this->handle($id);
     }
 
     public function jsonResponse(bool $deleted): array
@@ -39,13 +41,6 @@ class TrashAccount
 
         return [
             'message' => "Account delete $success",
-        ];
-    }
-
-    public function rules(): array
-    {
-        return [
-            'id' => ['required', 'exists:accounts,id'],
         ];
     }
 }
