@@ -26,8 +26,10 @@ class GetPledges
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
-    {
+    public function handle(
+        ?int $per_page = 10, 
+        ?string $search_term = ''
+    ): Collection | LengthAwarePaginator {
         $query = Pledge::query();
 
         if ($search_term) {
@@ -57,8 +59,10 @@ class GetPledges
         );
     }
 
-    public function jsonResponse(Collection | LengthAwarePaginator $pledges, ActionRequest $request): array
-    {
+    public function jsonResponse(
+        Collection | LengthAwarePaginator $pledges,
+        ActionRequest $request
+    ): array {
         $message = count($pledges) . ' pledges ';
         $message .= $request->search_term ? 'found' : 'fetched';
 
