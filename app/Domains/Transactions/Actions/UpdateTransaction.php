@@ -71,7 +71,7 @@ class UpdateTransaction
             $validator->errors()->add('toable_id', 'Invalid toable selected');
     }
 
-    public function asController(string $id, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
         return $this->handle($id, $request->validated());
     }
