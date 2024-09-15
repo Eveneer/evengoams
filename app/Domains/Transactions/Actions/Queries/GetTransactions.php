@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\Domains\Transactions\Actions\Queries;
 
-use App\Domains\Accounts\Actions\Queries\GetAccounts;
-use App\Domains\Donors\Actions\Queries\GetDonors;
-use App\Domains\Tags\Actions\Queries\GetTags;
 use App\Domains\Tags\Tag;
-use App\Domains\Transactions\Transaction;
-use App\Domains\Vendors\Actions\Queries\GetVendors;
-use Illuminate\Auth\Access\Response;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Domains\Accounts\Account;
 use Illuminate\Support\Collection;
+use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
+use App\Domains\Transactions\Transaction;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Domains\Tags\Actions\Queries\GetTags;
+use App\Domains\Donors\Actions\Queries\GetDonors;
+use App\Domains\Vendors\Actions\Queries\GetVendors;
+use App\Domains\Accounts\Actions\Queries\GetAccounts;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class GetTransactions
 {
@@ -40,13 +41,13 @@ class GetTransactions
 
         // $vendors = (new GetVendors())->handle($search_term);
 
-        // $accounts = (new GetAccounts())->handle($per_page, $search_term);
+        $accounts = (new GetAccounts())->handle($per_page, $search_term);
         
         if ($search_term) {
             $transactions->where('note', 'like', "%$search_term%")
-                ->orWhereHas('tags', function ($query) use ($tags) {
-                    $query->whereIn('id', $tags->pluck('id'));
-                });
+                // ->orWhereHas('tags', function ($query) use ($tags) {
+                //     $query->whereIn('id', $tags->pluck('id'));
+                // })
                 // ->orWhereHas('donor', function ($query) use ($donors) {
                 //     $query->whereIn('id', $donors->pluck('id'));
                 // })
@@ -56,6 +57,16 @@ class GetTransactions
                 // ->orWhereHas('account', function ($query) use ($accounts) {
                 //     $query->whereIn('id', $accounts->pluck('id'));
                 // });
+                ->orWhere(function ($query) use ($accounts) {
+                    $query->whereHasMorph('fromable', [Account::class], function ($query) use ($accounts) {
+                        $query->whereIn('id', $accounts->pluck('id'));
+                    });
+                })
+                ->orWhere(function ($query) use ($accounts) {
+                    $query->whereHasMorph('toable', [Account::class], function ($query) use ($accounts) {
+                        $query->whereIn('id', $accounts->pluck('id'));
+                    });
+                });
         }
     
         return $per_page === null ?
@@ -76,14 +87,13 @@ class GetTransactions
         return $this->handle($request->per_page, $request->search_term);
     }
 
-    public function jsonResponse(
-        Collection | LengthAwarePaginator $transactions,
-        ActionRequest $request
-    ): array {
+    public function jsonResponse(Collection | LengthAwarePaginator $transactions, ActionRequest $request): array
+    {
         $message = count($transactions) . ' transactions ';
         $message .= $request->search_term ? 'found' : 'fetched';
 
         return [
+            'data' => $transactions,
             'message' => $message . ' successfully',
         ];
     }
