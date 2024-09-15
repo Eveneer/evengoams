@@ -56,6 +56,7 @@ class UpdateTransaction
             $tag_ids = $params['tag_ids'];
             unset($params['tag_ids']);
             $tag_ids = CreateTags::run($tag_ids);
+            $transaction->tags()->sync($tag_ids);
         }
 
         $transaction->update($params);
@@ -75,8 +76,6 @@ class UpdateTransaction
                 );
             }
         }
-
-        $transaction->tags()->sync($tag_ids);
             
         return $transaction;
     }
