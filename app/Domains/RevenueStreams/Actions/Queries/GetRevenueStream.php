@@ -32,7 +32,7 @@ class GetRevenueStream
     public function rules(): array
     {
         return [
-            'id' => ['required', 'exists:revenuestreams,id'],
+            'id' => ['required', 'exists:revenue_streams,id'],
         ];
     }
 
