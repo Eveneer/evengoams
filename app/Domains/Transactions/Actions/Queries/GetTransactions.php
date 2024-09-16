@@ -35,38 +35,22 @@ class GetTransactions
     public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
     {
         $transactions = Transaction::query();
-        $tags = (new GetTags())->handle($per_page, $search_term);
-
-        // $donors = (new GetDonors())->handle($per_page, $search_term);
-
-        // $vendors = (new GetVendors())->handle($search_term);
-
-        $accounts = (new GetAccounts())->handle($per_page, $search_term);
+        $tags = GetTags::run($per_page, $search_term);
+        $accounts = GetAccounts::run($per_page, $search_term);
         
         if ($search_term) {
             $transactions->where('note', 'like', "%$search_term%")
-                // ->orWhereHas('tags', function ($query) use ($tags) {
-                //     $query->whereIn('id', $tags->pluck('id'));
-                // })
-                // ->orWhereHas('donor', function ($query) use ($donors) {
-                //     $query->whereIn('id', $donors->pluck('id'));
-                // })
-                // ->orWhereHas('vendor', function ($query) use ($vendors) {
-                //     $query->whereIn('id', $vendors->pluck('id'));
-                // })
-                // ->orWhereHas('account', function ($query) use ($accounts) {
-                //     $query->whereIn('id', $accounts->pluck('id'));
-                // });
-                ->orWhere(function ($query) use ($accounts) {
-                    $query->whereHasMorph('fromable', [Account::class], function ($query) use ($accounts) {
+                ->orWhereIn('id', function ($query) use ($tags) {
+                    $query->select('transaction_id')
+                        ->from('tag_transaction')
+                        ->whereIn('tag_id', $tags->pluck('id'));
+                    })
+                ->orwhereHasMorph('fromable', [Account::class], function ($query) use ($accounts) {
+                        $query->whereIn('id', $accounts->pluck('id'));
+                    })
+                ->orwhereHasMorph('toable', [Account::class], function ($query) use ($accounts) {
                         $query->whereIn('id', $accounts->pluck('id'));
                     });
-                })
-                ->orWhere(function ($query) use ($accounts) {
-                    $query->whereHasMorph('toable', [Account::class], function ($query) use ($accounts) {
-                        $query->whereIn('id', $accounts->pluck('id'));
-                    });
-                });
         }
     
         return $per_page === null ?
