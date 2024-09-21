@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Domains\RevenueStreams\Actions;
 
 use App\Domains\RevenueStreams\RevenueStream;
-use Illuminate\Auth\Access\Response;
+use App\Domains\RevenueStreamTypes\RevenueStreamType;
+use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
 
 class CreateRevenueStream
 {
@@ -35,17 +39,35 @@ class CreateRevenueStream
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'type_id' => ['required', 'exists:revenue_stream_types,id'],
-            'values' => ['required', 'json'],
+            'values' => ['required', 'array'],
         ];
     }
+
+    public function withValidator(Validator $validator, ActionRequest $request): void
+    {
+        $validator->after(function (Validator $validator) use ($request) {
+            if ($request->has('type_id')) {
+                $type = RevenueStreamType::find($request->type_id);
+                if ($type) {
+                    $values = $request->input('values', []);
+                    foreach ($values as $value) {
+                        $rules[$value['type']] = ['required',
+                         'in:' . implode(',', RevenueStreamTypesEnum::getValues())];
+                        }
+                    }
+                }
+            });
+    }     
 
     public function asController(Request $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(RevenueStream $revenue_stream, Request $request): array
-    {
+    public function jsonResponse(
+        RevenueStream $revenue_stream, 
+        Request $request
+    ): array {
         return [
             'message' => 'RevenueStream created successfully',
         ];
