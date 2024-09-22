@@ -14,6 +14,7 @@ use App\Domains\RevenueStreams\RevenueStream;
 use App\Domains\RevenueStreams\Actions\Queries\GetRevenueStreams;
 use App\Domains\Tags\Actions\Queries\GetTags;
 use App\Domains\Transactions\Transaction;
+use App\Domains\Users\Actions\Queries\GetUsers;
 use App\Domains\Vendors\Vendor;
 use App\Domains\Vendors\Actions\Queries\GetVendors;
 use Illuminate\Auth\Access\Response;
@@ -44,6 +45,7 @@ class GetTransactions
 
         $transactions = Transaction::query();
         $tags = GetTags::run($per_page, $search_term);
+        $users = GetUsers::run($per_page, $search_term);
         $accounts = GetAccounts::run($per_page, $search_term);
         $donors = GetDonors::run($per_page, $search_term);
         $vendors = GetVendors::run($per_page, $search_term);
@@ -52,6 +54,7 @@ class GetTransactions
         
         if ($search_term) {
             $transactions->where('note', 'like', "%$search_term%")
+                ->orWhereIn('author_id', $users->pluck('id'))
                 ->orWhereIn('id', function ($query) use ($tags) {
                     $query->select('transaction_id')
                         ->from('tag_transaction')
