@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Accounts\Actions\Queries;
+namespace App\Domains\RevenueStreams\Actions\Queries;
 
-use App\Domains\Accounts\Account;
+use App\Domains\RevenueStreams\RevenueStream;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class GetAccounts
+class GetRevenueStreams
 {
     use AsAction;
 
@@ -26,14 +26,16 @@ class GetAccounts
         return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(?int $per_page = 10, ?string $search_term = ''): Collection | LengthAwarePaginator
-    {
-        $query = Account::query();
+    public function handle(
+        ?int $per_page = 10, 
+        ?string $search_term = ''
+    ): Collection | LengthAwarePaginator {
+        $query = RevenueStream::query();
 
         if ($search_term) {
             $query
                 ->where('name', 'like', "%$search_term%")
-                ->orWhere('details', 'like', "%$search_term%");
+                ->orWhere('description', 'like', "%$search_term%");
         }
     
         return $per_page === null ?
@@ -57,13 +59,15 @@ class GetAccounts
         );
     }
 
-    public function jsonResponse(Collection | LengthAwarePaginator $accounts, ActionRequest $request): array
-    {
-        $message = count($accounts) . ' accounts ';
+    public function jsonResponse(
+        Collection | LengthAwarePaginator $revenuestreams, 
+        ActionRequest $request
+    ): array {
+        $message = count($revenuestreams) . ' revenuestreams ';
         $message .= $request->search_term ? 'found' : 'fetched';
 
         return [
-            'data' => $accounts,
+            'data' => $revenuestreams,
             'message' => $message . ' successfully',
         ];
     }

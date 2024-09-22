@@ -8,3 +8,7 @@ Route::get('/', function () {
 
 require __DIR__ . '/domains/accounts.php';
 require __DIR__ . '/domains/revenuestreams.php';
+require __DIR__ . '/domains/donors.php';
+require __DIR__ . '/domains/transactions.php';
+require __DIR__ . '/domains/users.php';
+require __DIR__ . '/domains/employees.php';
