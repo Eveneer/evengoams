@@ -50,7 +50,7 @@ class UpdateRevenueStreamType
         ActionRequest $request
     ): void {
         $validator->after(function (Validator $validator) use ($request) {
-            $properties = $request->input('properties', []);
+            $properties = $request->properties;
     
             $validateProperties = function (array $properties) use (
                 &$validateProperties, $validator
