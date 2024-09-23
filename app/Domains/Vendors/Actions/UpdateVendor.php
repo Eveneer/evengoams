@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domains\Vendors\Actions;
 
-use App\Domains\Vendors\Vendor;
+use App\Domains\Tags\Actions\CreateTags;
 use App\Domains\Vendors\Enums\VendorTypesEnum;
+use App\Domains\Vendors\Vendor;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
@@ -27,7 +28,14 @@ class UpdateVendor
 
     public function handle(Vendor $vendor, array $params): Vendor
     {
+        if (isset($params['tag_ids'])) {
+            $tag_ids = $params['tag_ids'];
+            unset($params['tag_ids']);
+            $tag_ids = CreateTags::run($tag_ids);
+        }
+
         $vendor->update($params);
+        $vendor->tags()->sync($params['tag_ids']);
         return $vendor;
     }
 
@@ -37,7 +45,7 @@ class UpdateVendor
             'id' => ['required', 'exists:vendors,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'type' => ['sometimes', 'in:' . implode(',', VendorTypesEnum::asArray())],
-            'tag_ids' => ['nullable', 'array'],
+            'tag_ids' => ['sometimes', 'nullable', 'array'],
             'tag_ids.*' => ['exists:tags,id'],
             'contacts' => ['nullable', 'array'],
             'contacts.*.name' => ['nullable', 'string'],
