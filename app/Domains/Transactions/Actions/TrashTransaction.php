@@ -30,19 +30,11 @@ class TrashTransaction
     {
         $transaction = Transaction::findOrFail($id);
         
-        if ($transaction->fromable_type === Account::class) {
-            AddBalance::run([
-                'id' => $transaction->fromable_id, 
-                'amount' => $transaction->amount
-            ]);
-        }
+        if ($transaction->fromable_type === Account::class)
+            AddBalance::run(['id' => $transaction->fromable_id, 'amount' => $transaction->amount]);
 
-        if ($transaction->toable_type === Account::class) {
-            AddBalance::run([
-                'id' => $transaction->toable_id, 
-                'amount' => -1 * $transaction->amount
-            ]);
-        }
+        if ($transaction->toable_type === Account::class)
+            AddBalance::run(['id' => $transaction->toable_id, 'amount' => -1 * $transaction->amount]);
         
         $transaction->tags()->detach();
 
