@@ -44,13 +44,9 @@ class GetTransactions
     ): Collection | LengthAwarePaginator {
 
         $transactions = Transaction::query();
-        $tags = GetTags::run($per_page, $search_term);
-        $users = GetUsers::run($per_page, $search_term);
-        $accounts = GetAccounts::run($per_page, $search_term);
-        $donors = GetDonors::run($per_page, $search_term);
-        $vendors = GetVendors::run($per_page, $search_term);
-        $employees = GetEmployees::run($per_page, $search_term);
-        $revenue_streams = GetRevenueStreams::run($per_page, $search_term);
+        $tags = GetTags::run(null, $search_term);
+        $users = GetUsers::run(null, $search_term);
+        $accounts = GetAccounts::run(null, $search_term);
         
         if ($search_term) {
             $transactions->where('note', 'like', "%$search_term%")
@@ -59,25 +55,29 @@ class GetTransactions
                     $query->select('transaction_id')
                         ->from('tag_transaction')
                         ->whereIn('tag_id', $tags->pluck('id'));
-                    })
-                ->orwhereHasMorph('fromable', [Account::class], function ($query) use ($accounts) {
-                        $query->whereIn('id', $accounts->pluck('id'));
-                    })
-                ->orwhereHasMorph('fromable', [Donor::class], function ($query) use ($donors) {
-                        $query->whereIn('id', $donors->pluck('id'));
-                    })
-                ->orwhereHasMorph('fromable', [RevenueStream::class], function ($query) use ($revenue_streams) {
-                        $query->whereIn('id', $revenue_streams->pluck('id'));
-                    })
-                ->orwhereHasMorph('toable', [Account::class], function ($query) use ($accounts) {
-                        $query->whereIn('id', $accounts->pluck('id'));
-                    })
-                ->orwhereHasMorph('toable', [Vendor::class], function ($query) use ($vendors) {
-                    $query->whereIn('id', $vendors->pluck('id'));
                 })
-                ->orwhereHasMorph('toable', [Employee::class], function ($query) use ($employees) {
-                    $query->whereIn('id', $employees->pluck('id'));
-                });  
+                ->orwhereHasMorph(
+                    'fromable',
+                    [Account::class, Donor::class, RevenueStream::class],
+                    function ($query) use ($accounts, $search_term) {
+                        $query->whereIn('id', [
+                            ...$accounts->pluck('id'), 
+                            ...GetDonors::run(null, $search_term)->pluck('id'), 
+                            ...GetRevenueStreams::run(null, $search_term)->pluck('id')
+                        ]);
+                    }
+                )
+                ->orwhereHasMorph(
+                    'toable',
+                    [Account::class, Vendor::class, Employee::class],
+                    function ($query) use ($accounts, $search_term) {
+                        $query->whereIn('id', [
+                            ...$accounts->pluck('id'), 
+                            ...GetVendors::run(null, $search_term)->pluck('id'), 
+                            ...GetEmployees::run(null, $search_term)->pluck('id')
+                        ]);
+                    }
+                );
         }
     
         return $per_page === null ?
