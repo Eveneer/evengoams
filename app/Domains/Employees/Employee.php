@@ -13,6 +13,20 @@ class Employee extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'phone_number',
+        'position',
+        'salary',
+        'hire_date',
+    ];
+
+    protected $casts = [
+        'hire_date' => 'date',
+    ];
+    
     public function transactions(): MorphMany
     {
         return $this->morphMany(Transaction::class, 'toable');
