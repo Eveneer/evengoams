@@ -8,6 +8,7 @@ use App\Domains\Accounts\Account;
 use App\Domains\Donors\Donor;
 use App\Domains\Employees\Employee;
 use App\Domains\RevenueStreams\RevenueStream;
+use App\Domains\Tags\Actions\CreateTags;
 use App\Domains\Transactions\Transaction;
 use App\Domains\Vendors\Vendor;
 use Illuminate\Auth\Access\Response;
@@ -33,7 +34,18 @@ class UpdateTransaction
     public function handle(string $id, array $params): Transaction
     {
         $transaction = Transaction::findOrFail($id);
+        $transaction->refund();
+
+        if (isset($params['tags'])) {  
+            $tag_ids = CreateTags::run($params['tags']);
+            unset($params['tags']);
+            $transaction->tags()->sync($tag_ids);
+        }
+
+        $params['amount'] = isset($params['amount']) ? $params['amount'] * 100 : $transaction->amount;
         $transaction->update($params);
+        $transaction->transact();
+            
         return $transaction;
     }
 
@@ -46,21 +58,27 @@ class UpdateTransaction
             'author_id' => ['sometimes', 'exists:users,id'],
             'fromable_type' => [
                 'required',
-                'in:' . implode(',', [Account::class, Donor::class, RevenueStream::class])
+                'in:' . implode(
+                    ',', [Account::class, Donor::class, RevenueStream::class]
+                    )
             ],
             'fromable_id' => ['required', 'uuid'],
             'toable_type' => [
                 'required',
-                'in:' . implode(',', [Account::class, Employee::class, Vendor::class])
+                'in:' . implode(
+                    ',', [Account::class, Employee::class, Vendor::class]
+                    )
             ],
             'toable_id' => ['required', 'uuid'],
             'note' => ['sometimes', 'nullable', 'string'],
-            'tag_ids' => ['sometimes', 'nullable', 'json'],
+            'tags' => ['sometimes', 'nullable', 'json'],
         ];
     }
 
-    public function afterValidator(Validator $validator, ActionRequest $request): void
-    {
+    public function afterValidator(
+        Validator $validator, 
+        ActionRequest $request
+    ): void {
         $fromable = $request->fromable_type;
         $toable = $request->toable_type;
 
@@ -71,13 +89,15 @@ class UpdateTransaction
             $validator->errors()->add('toable_id', 'Invalid toable selected');
     }
 
-    public function asController(string $id, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
         return $this->handle($id, $request->validated());
     }
 
-    public function jsonResponse(Transaction $transaction, Request $request): array
-    {
+    public function jsonResponse(
+        Transaction $transaction,
+         Request $request
+    ): array {
         return [
             'message' => 'Transaction updated successfully',
         ];

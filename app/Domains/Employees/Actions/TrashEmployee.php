@@ -23,14 +23,16 @@ class TrashEmployee
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Employee $employee): bool
+    public function handle(string $id): bool
     {
+        $employee = Employee::findOrFail($id);
+
         return $employee->delete();
     }
 
-    public function asController(Employee $employee)
+    public function asController(string $id)
     {
-        return $this->handle($employee);
+        return $this->handle($id);
     }
 
     public function rules(): array
