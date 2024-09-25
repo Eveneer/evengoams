@@ -26,8 +26,12 @@ class RestoreTransaction
     public function handle(array $params): bool
     {
         $transaction = Transaction::withTrashed()->where('id', $params['id'])->first();
+        $restored = $transaction->restore();
+        
+        if ($restored)
+            $transaction->transact();
 
-        return $transaction->restore();
+        return $restored;
     }
 
     public function rules(): array
@@ -42,10 +46,10 @@ class RestoreTransaction
         return $this->handle($request->validated());
     }
 
+
     public function jsonResponse(bool $restored): array
     {
         $success = $restored ? 'successful' : 'unsuccessful';
-
         return [
             'message' => "Transaction restore $success",
         ];
