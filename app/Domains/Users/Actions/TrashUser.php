@@ -23,14 +23,15 @@ class TrashUser
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(User $user): bool
+    public function handle(string $id): bool
     {
+        $user = User::findOrFail($id);
         return $user->delete();
     }
 
-    public function asController(User $user)
+    public function asController(string $id)
     {
-        return $this->handle($user);
+        return $this->handle($id);
     }
 
     public function jsonResponse(bool $deleted): array

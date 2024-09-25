@@ -6,7 +6,6 @@ namespace App\Domains\Users\Actions;
 
 use App\Domains\Users\User;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -24,30 +23,31 @@ class RestoreUser
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): User
+    public function handle(array $params): bool
     {
         $user = User::withTrashed()->where('id', $params['id'])->first();
-        $user->restore();
 
-        return $user;
+        return $user->restore();
     }
 
     public function rules(): array
     {
         return [
-            'id' => ['exists:']
+            'id' => ['required', 'exists:users,id'],
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(User $user, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'User restored successfully',
+            'message' => "User restore $success",
         ];
     }
 }
