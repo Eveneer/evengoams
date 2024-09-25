@@ -6,7 +6,6 @@ namespace App\Domains\Employees\Actions;
 
 use App\Domains\Employees\Employee;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Http\Request;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -24,12 +23,11 @@ class RestoreEmployee
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): Employee
+    public function handle(array $params): bool
     {
         $employee = Employee::withTrashed()->where('id', $params['id'])->first();
-        $employee->restore();
 
-        return $employee;
+        return $employee->restore();
     }
 
     public function rules(): array
@@ -39,15 +37,17 @@ class RestoreEmployee
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(Employee $employee, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'Employee restored successfully',
+            'message' => "Employee restore $success",
         ];
     }
 }

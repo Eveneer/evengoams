@@ -24,12 +24,11 @@ class RestorePledge
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): Pledge
+    public function handle(array $params): bool
     {
         $pledge = Pledge::withTrashed()->where('id', $params['id'])->first();
-        $pledge->restore();
 
-        return $pledge;
+        return $pledge->restore();
     }
 
     public function rules(): array
@@ -39,15 +38,17 @@ class RestorePledge
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(Pledge $pledge, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'Pledge restored successfully',
+            'message' => "Pledge restore $success",
         ];
     }
 }
