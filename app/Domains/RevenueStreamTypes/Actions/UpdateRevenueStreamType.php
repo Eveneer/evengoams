@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domains\RevenueStreamTypes\Actions;
 
+use App\Domains\RevenueStreamTypes\Enums\RevenueStreamTypesEnum;
 use App\Domains\RevenueStreamTypes\RevenueStreamType;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -48,8 +50,10 @@ class UpdateRevenueStreamType
         return $this->handle($id, $request->validated());
     }
 
-    public function jsonResponse(RevenueStreamType $revenue_stream_type, Request $request): array
-    {
+    public function jsonResponse(
+        RevenueStreamType $revenue_stream_type,
+         Request $request
+    ): array {
         return [
             'message' => 'RevenueStreamType updated successfully',
         ];
