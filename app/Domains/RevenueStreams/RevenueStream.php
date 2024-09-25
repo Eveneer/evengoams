@@ -35,5 +35,4 @@ class RevenueStream extends Model
     {
         return $this->morphMany(Transaction::class, 'fromable');
     }
-
 }
