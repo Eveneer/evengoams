@@ -23,8 +23,10 @@ class TrashVendor
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Vendor $vendor): bool
+    public function handle(string $id): bool
     {
+        $vendor = Vendor::findOrFail($id);
+
         return $vendor->delete();
     }
 
@@ -35,9 +37,9 @@ class TrashVendor
         ];
     }
 
-    public function asController(Vendor $vendor)
+    public function asController(string $id)
     {
-        return $this->handle($vendor);
+        return $this->handle($id);
     }
 
     public function jsonResponse(bool $deleted): array

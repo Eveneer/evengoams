@@ -27,11 +27,11 @@ class UpdateRevenueStreamType
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(
-        RevenueStreamType $revenue_stream_type, 
-        array $params
-    ): RevenueStreamType {
+    public function handle(string $id, array $params): RevenueStreamType
+    {
+        $revenue_stream_type = RevenueStreamType::findOrFail($id);
         $revenue_stream_type->update($params);
+
         return $revenue_stream_type;
     }
 
@@ -41,53 +41,13 @@ class UpdateRevenueStreamType
             'id' => ['required', 'exists:revenue_stream_types,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'properties' => ['required', 'array'],
+            'properties' => ['sometimes', 'array'],
         ];
     }
 
-    public function withValidator(
-        Validator $validator,
-        ActionRequest $request
-    ): void {
-        $validator->after(function (Validator $validator) use ($request) {
-            $properties = $request->properties;
-    
-            $validateProperties = function (array $properties) use (
-                &$validateProperties, $validator
-                ) {
-                foreach ($properties as $index => $property) {
-    
-                    if (empty($property['name'])) {
-                        $validator->errors()->add(
-                            "name",'The name field is required.'
-                        );
-                    }
-    
-                    if (!in_array($property['type'],
-                     RevenueStreamTypesEnum::getValues())
-                     ) {
-                        $validator->errors()->add("type",
-                         'The selected type is invalid.'
-                        );
-                    }
-    
-                    if ($property['type'] === 'repeater'
-                     && isset($property['properties'])) {
-                        $validateProperties($property['properties']);
-                    }
-                }
-            };
-    
-            $validateProperties($properties);
-        });
-    }
-    
-
-    public function asController(
-        RevenueStreamType $revenue_stream_type,
-         Request $request
-    ) {
-        return $this->handle($revenue_stream_type, $request->validated());
+    public function asController(string $id, ActionRequest $request)
+    {
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(

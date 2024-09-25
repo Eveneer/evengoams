@@ -23,8 +23,10 @@ class TrashTag
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Tag $tag): bool
+    public function handle(string $id): bool
     {
+        $tag = Tag::findOrFail($id);
+
         return $tag->delete();
     }
 
@@ -35,9 +37,9 @@ class TrashTag
         ];
     }
 
-    public function asController(Tag $tag)
+    public function asController(string $id)
     {
-        return $this->handle($tag);
+        return $this->handle($id);
     }
 
     public function jsonResponse(bool $deleted): array

@@ -12,5 +12,6 @@ require __DIR__ . '/domains/transactions.php';
 require __DIR__ . '/domains/revenuestreamtypes.php';
 require __DIR__ . '/domains/users.php';
 require __DIR__ . '/domains/employees.php';
+require __DIR__ . '/domains/pledges.php';
 require __DIR__ . '/domains/revenuestreams.php';
 

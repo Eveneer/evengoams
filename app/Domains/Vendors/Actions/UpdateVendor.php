@@ -26,16 +26,18 @@ class UpdateVendor
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Vendor $vendor, array $params): Vendor
+    public function handle(string $id, array $params): Vendor
     {
+        $vendor = Vendor::findOrFail($id);
+
         if (isset($params['tag_ids'])) {
-            $tag_ids = $params['tag_ids'];
+            $tag_ids = CreateTags::run($params['tag_ids']);
             unset($params['tag_ids']);
-            $tag_ids = CreateTags::run($tag_ids);
+            $vendor->tags()->sync($tag_ids);
         }
 
         $vendor->update($params);
-        $vendor->tags()->sync($params['tag_ids']);
+
         return $vendor;
     }
 
@@ -54,9 +56,9 @@ class UpdateVendor
         ];
     }
 
-    public function asController(Vendor $vendor, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
-        return $this->handle($vendor, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Vendor $vendor, Request $request): array

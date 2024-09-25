@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Pledges\Actions;
+namespace App\Domains\Pledges\Actions\Queries;
 
 use App\Domains\Pledges\Pledge;
 use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class TrashPledge
+class GetPledge
 {
     use AsAction;
 
@@ -17,17 +17,16 @@ class TrashPledge
     {
         $user = $request->user();
         
-        if ($user && $user->has_general_access)
+        if ($user && $user->has_general_access) {
             return Response::allow();
+        }
 
-        return Response::deny('You are unauthorised to perform this action');
+        return Response::deny('You are unauthorized to perform this action');
     }
 
-    public function handle(string $id): bool
+    public function handle(string $id): Pledge | null
     {
-        $pledge = Pledge::findOrFail($id);
-
-        return $pledge->delete();
+        return Pledge::find($id);
     }
 
     public function rules(): array
@@ -37,17 +36,16 @@ class TrashPledge
         ];
     }
 
-    public function asController(string $id)
+    public function asController(ActionRequest $request)
     {
-        return $this->handle($id);
+        return $this->handle($request->get('id'));
     }
 
-    public function jsonResponse(bool $deleted): array
+    public function jsonResponse(Pledge $pledge): array
     {
-        $success = $deleted ? 'successful' : 'unsuccessful';
-
         return [
-            'message' => "Pledge delete $success",
+            'data' => $pledge,
+            'message' => 'Pledge retrieved successfully',
         ];
     }
 }

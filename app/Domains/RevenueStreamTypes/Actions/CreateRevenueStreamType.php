@@ -41,7 +41,7 @@ class CreateRevenueStreamType
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }

@@ -24,13 +24,11 @@ class RestoreRevenueStreamType
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): RevenueStreamType
+    public function handle(array $params): bool
     {
-        $revenue_stream_type = RevenueStreamType::withTrashed()
-            ->where('id', $params['id'])->first();
-        $revenue_stream_type->restore();
+        $revenue_stream_type = RevenueStreamType::withTrashed()->where('id', $params['id'])->first();
 
-        return $revenue_stream_type;
+        return $revenue_stream_type->restore();
     }
 
     public function rules(): array
@@ -40,17 +38,17 @@ class RestoreRevenueStreamType
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(
-        RevenueStreamType $revenue_stream_type, 
-        Request $request
-    ): array {
+    public function jsonResponse(bool $restored): array
+    {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'RevenueStreamType restored successfully',
+            'message' => "RevenueStreamType restore $success",
         ];
     }
 }
