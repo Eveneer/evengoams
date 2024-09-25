@@ -23,8 +23,9 @@ class TrashRevenueStreamType
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(RevenueStreamType $revenue_stream_type): bool
+    public function handle(string $id): bool
     {
+        $revenue_stream_type = RevenueStreamType::findOrFail($id);
         return $revenue_stream_type->delete();
     }
 
@@ -35,9 +36,9 @@ class TrashRevenueStreamType
         ];
     }
 
-    public function asController(RevenueStreamType $revenue_stream_type)
+    public function asController(string $id)
     {
-        return $this->handle($revenue_stream_type);
+        return $this->handle($id);
     }
 
     public function jsonResponse(bool $deleted): array
