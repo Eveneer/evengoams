@@ -23,8 +23,10 @@ class TrashPledge
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Pledge $pledge): bool
+    public function handle(string $id): bool
     {
+        $pledge = Pledge::findOrFail($id);
+
         return $pledge->delete();
     }
 
@@ -35,9 +37,9 @@ class TrashPledge
         ];
     }
 
-    public function asController(Pledge $pledge)
+    public function asController(string $id)
     {
-        return $this->handle($pledge);
+        return $this->handle($id);
     }
 
     public function jsonResponse(bool $deleted): array
