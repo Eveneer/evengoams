@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Tags\Actions\Queries;
+namespace App\Domains\Pledges\Actions\Queries;
 
-use App\Domains\Tags\Tag;
+use App\Domains\Donors\Actions\Queries\GetDonors;
+use App\Domains\Pledges\Pledge;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-
-class GetTags
+class GetPledges
 {
     use AsAction;
 
@@ -20,7 +20,7 @@ class GetTags
     {
         $user = $request->user();
         
-        if ($user->has_general_access) {
+        if ($user && $user->has_general_access) {
             return Response::allow();
         }
 
@@ -31,12 +31,11 @@ class GetTags
         ?int $per_page = 10, 
         ?string $search_term = ''
     ): Collection | LengthAwarePaginator {
-        $query = Tag::query();
+        $query = Pledge::query();
 
         if ($search_term) {
-            $search_key = Tag::constructKey($search_term);
             $query
-                ->where('key', 'like', "%$search_key%");
+                ->whereIn('donor_id', GetDonors::run(null, $search_term)->pluck('id'));
         }
     
         return $per_page === null ?
@@ -60,13 +59,15 @@ class GetTags
         );
     }
 
-    public function jsonResponse(Collection | LengthAwarePaginator $tags, ActionRequest $request): array
-    {
-        $message = count($tags) . ' tags ';
+    public function jsonResponse(
+        Collection | LengthAwarePaginator $pledges,
+        ActionRequest $request
+    ): array {
+        $message = count($pledges) . ' pledges ';
         $message .= $request->search_term ? 'found' : 'fetched';
 
         return [
-            'data' => $tags,
+            'data' => $pledges,
             'message' => $message . ' successfully',
         ];
     }

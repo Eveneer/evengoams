@@ -26,6 +26,10 @@ class TrashTransaction
     public function handle(string $id): bool
     {
         $transaction = Transaction::findOrFail($id);
+        $trashed = $transaction->transact();
+        
+        if ($trashed)
+            $transaction->refund();
 
         return $transaction->delete();
     }
