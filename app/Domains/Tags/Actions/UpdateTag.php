@@ -24,18 +24,19 @@ class UpdateTag
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(Tag $tag, array $params): Tag
+    public function handle(string $id, array $params): Tag
     {
+        $tag = Tag::findOrFail($id);
+        $existingTag = Tag::where('name', $params['name'])->first();
 
-    $existingTag = Tag::where('name', $params['name'])->first();
+        if ($existingTag) {
+            return $tag;
+        }
 
-    if ($existingTag) {
+        $params['key'] = Tag::constructKey($params['name']);
+        $tag->update($params);
+
         return $tag;
-    }
-
-    $params['key'] = Tag::constructKey($params['name']);
-    $tag->update($params);
-    return $tag;
     }
 
     public function rules(): array
@@ -46,9 +47,9 @@ class UpdateTag
         ];
     }
 
-    public function asController(Tag $tag, Request $request)
+    public function asController(string $id, ActionRequest $request)
     {
-        return $this->handle($tag, $request->validated());
+        return $this->handle($id, $request->validated());
     }
 
     public function jsonResponse(Tag $tag, Request $request): array

@@ -24,12 +24,11 @@ class RestoreTag
         return Response::deny('You are unauthorised to perform this action');
     }
 
-    public function handle(array $params): Tag
+    public function handle(array $params): bool
     {
         $tag = Tag::withTrashed()->where('id', $params['id'])->first();
-        $tag->restore();
 
-        return $tag;
+        return $tag->restore();
     }
 
     public function rules(): array
@@ -39,15 +38,17 @@ class RestoreTag
         ];
     }
 
-    public function asController(Request $request)
+    public function asController(ActionRequest $request)
     {
         return $this->handle($request->validated());
     }
 
-    public function jsonResponse(Tag $tag, Request $request): array
+    public function jsonResponse(bool $restored): array
     {
+        $success = $restored ? 'successful' : 'unsuccessful';
+
         return [
-            'message' => 'Tag restored successfully',
+            'message' => "Tag restore $success",
         ];
     }
 }
