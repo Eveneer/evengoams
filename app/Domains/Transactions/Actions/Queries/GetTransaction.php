@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domains\Transactions\Actions\Queries;
+
+use App\Domains\Transactions\Transaction;
+use Illuminate\Auth\Access\Response;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
+
+class GetTransaction
+{
+    use AsAction;
+
+    public function authorize(ActionRequest $request): Response
+    {
+        $user = $request->user();
+        
+        if ($user->has_general_access) {
+            return Response::allow();
+        }
+
+        return Response::deny('You are unauthorized to perform this action');
+    }
+
+    public function handle(string $id): Transaction | null
+    {
+        return Transaction::find($id);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'id' => ['required', 'exists:transactions,id'],
+        ];
+    }
+
+    public function asController(ActionRequest $request)
+    {
+        return $this->handle($request->get('id'));
+    }
+
+    public function jsonResponse(Transaction $transaction): array
+    {
+        return [
+            'data' => $transaction,
+            'message' => 'Transaction retrieved successfully',
+        ];
+    }
+}
