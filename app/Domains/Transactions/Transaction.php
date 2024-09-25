@@ -3,6 +3,7 @@
 namespace App\Domains\Transactions;
 
 use App\Domains\Accounts\Account;
+use App\Domains\Accounts\Actions\AddBalance;
 use App\Domains\Tags\Tag;
 use App\Domains\Users\User;
 use Illuminate\Database\Eloquent\Model;
@@ -79,5 +80,27 @@ class Transaction extends Model
     public function getToAttribute(): mixed
     {
         return $this->toable;
+    }
+
+    public function transact(): void
+    {
+        $this->refresh();
+
+        if ($this->fromable_type === Account::class)
+            AddBalance::run(['id' => $this->fromable_id, 'amount' => -1 * $this->amount]);
+
+        if ($this->toable_type === Account::class)
+            AddBalance::run(['id' => $this->toable_id, 'amount' => $this->amount]);
+    }
+
+    public function refund(): void
+    {
+        $this->refresh();
+        
+        if ($this->fromable_type === Account::class)
+            AddBalance::run(['id' => $this->fromable_id, 'amount' => $this->amount]);
+
+        if ($this->toable_type === Account::class)
+            AddBalance::run(['id' => $this->toable_id, 'amount' => -1 * $this->amount]);
     }
 }
