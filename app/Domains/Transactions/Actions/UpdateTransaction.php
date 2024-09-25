@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domains\Transactions\Actions;
 
-
 use App\Domains\Accounts\Account;
-use App\Domains\Accounts\Actions\AddBalance;
 use App\Domains\Donors\Donor;
 use App\Domains\Employees\Employee;
 use App\Domains\RevenueStreams\RevenueStream;
@@ -36,46 +34,17 @@ class UpdateTransaction
     public function handle(string $id, array $params): Transaction
     {
         $transaction = Transaction::findOrFail($id);
-        
-        if (isset($params['amount'])) {
+        $transaction->refund();
 
-            if ($params['fromable_type'] === Account::class) {
-                AddBalance::run(
-                ['id' => $params['fromable_id'], 'amount' => Transaction::find($id)->amount]
-                );
-            }
-
-            if ($params['toable_type'] === Account::class) {
-                AddBalance::run(
-                ['id' => $params['toable_id'], 'amount' => -1 * Transaction::find($id)->amount]
-                );
-            }    
-        }
-
-        if (isset($params['tag_ids'])) {  
-            $tag_ids = $params['tag_ids'];
-            unset($params['tag_ids']);
-            $tag_ids = CreateTags::run($tag_ids);
+        if (isset($params['tags'])) {  
+            $tag_ids = CreateTags::run($params['tags']);
+            unset($params['tags']);
             $transaction->tags()->sync($tag_ids);
         }
 
+        $params['amount'] = isset($params['amount']) ? $params['amount'] * 100 : $transaction->amount;
         $transaction->update($params);
-
-        if (isset($params['amount'])) {
-            $params['amount'] = $params['amount'] * 100;
-
-            if ($params['fromable_type'] === Account::class) {
-                AddBalance::run(
-                ['id' => $params['fromable_id'], 'amount' => -1 * $params['amount']]
-                );
-            }
-
-            if ($params['toable_type'] === Account::class) {
-                    AddBalance::run(
-                    ['id' => $params['toable_id'], 'amount' => $params['amount']]
-                );
-            }
-        }
+        $transaction->transact();
             
         return $transaction;
     }
@@ -102,7 +71,7 @@ class UpdateTransaction
             ],
             'toable_id' => ['required', 'uuid'],
             'note' => ['sometimes', 'nullable', 'string'],
-            'tag_ids' => ['sometimes', 'nullable', 'json'],
+            'tags' => ['sometimes', 'nullable', 'json'],
         ];
     }
 

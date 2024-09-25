@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domains\Transactions\Actions;
 
-use App\Domains\Accounts\Account;
-use App\Domains\Accounts\Actions\AddBalance;
 use App\Domains\Transactions\Transaction;
 use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -28,14 +26,12 @@ class RestoreTransaction
     public function handle(array $params): bool
     {
         $transaction = Transaction::withTrashed()->where('id', $params['id'])->first();
+        $restored = $transaction->restore();
+        
+        if ($restored)
+            $transaction->transact();
 
-        if ($transaction->fromable_type === Account::class)
-            AddBalance::run(['id' => $transaction->fromable_id, 'amount' => -1 * $transaction->amount]);
-
-        if ($transaction->toable_type === Account::class)
-            AddBalance::run(['id' => $transaction->toable_id, 'amount' => $transaction->amount]);
-
-        return $transaction->restore();
+        return $restored;
     }
 
     public function rules(): array

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domains\Transactions\Actions;
 
-
-use App\Domains\Accounts\Account;
-use App\Domains\Accounts\Actions\AddBalance;
 use App\Domains\Transactions\Transaction;
 use Illuminate\Auth\Access\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -29,14 +26,10 @@ class TrashTransaction
     public function handle(string $id): bool
     {
         $transaction = Transaction::findOrFail($id);
+        $trashed = $transaction->transact();
         
-        if ($transaction->fromable_type === Account::class)
-            AddBalance::run(['id' => $transaction->fromable_id, 'amount' => $transaction->amount]);
-
-        if ($transaction->toable_type === Account::class)
-            AddBalance::run(['id' => $transaction->toable_id, 'amount' => -1 * $transaction->amount]);
-        
-        $transaction->tags()->detach();
+        if ($trashed)
+            $transaction->refund();
 
         return $transaction->delete();
     }

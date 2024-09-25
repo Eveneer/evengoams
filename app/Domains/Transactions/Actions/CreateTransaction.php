@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domains\Transactions\Actions;
 
 use App\Domains\Accounts\Account;
-use App\Domains\Accounts\Actions\AddBalance;
 use App\Domains\Donors\Donor;
 use App\Domains\Employees\Employee;
 use App\Domains\RevenueStreams\RevenueStream;
@@ -35,19 +34,12 @@ class CreateTransaction
     public function handle(array $params): Transaction
     {
         $params['amount'] = $params['amount'] * 100;
-        
-        if ($params['fromable_type'] === Account::class)
-            AddBalance::run(['id' => $params['fromable_id'], 'amount' => -1 * $params['amount']]);
 
-        if ($params['toable_type'] === Account::class)
-            AddBalance::run(['id' => $params['toable_id'], 'amount' => $params['amount']]);
-
-        $tag_ids = $params['tag_ids'];
-        unset($params['tag_ids']);
-        $tag_ids = CreateTags::run($tag_ids);
+        $tag_ids = CreateTags::run($params['tags']);
+        unset($params['tags']);
         $transaction = Transaction::create($params);
-
         $transaction->tags()->sync($tag_ids);
+        $transaction->transact();
 
         return $transaction;
     }
@@ -73,7 +65,7 @@ class CreateTransaction
             ],
             'toable_id' => ['required', 'uuid'],
             'note' => ['nullable', 'string'],
-            'tag_ids' => ['nullable', 'array'],
+            'tags' => ['nullable', 'array'],
         ];
     }
 
