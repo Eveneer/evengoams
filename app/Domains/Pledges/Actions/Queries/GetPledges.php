@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domains\Pledges\Actions\Queries;
 
+use App\Domains\Donors\Actions\Queries\GetDonors;
 use App\Domains\Pledges\Pledge;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -34,8 +35,7 @@ class GetPledges
 
         if ($search_term) {
             $query
-                ->where('amount', 'like', "%$search_term%")
-                ->orWhere('recurs', 'like', "%$search_term%");
+                ->whereIn('donor_id', GetDonors::run(null, $search_term)->pluck('id'));
         }
     
         return $per_page === null ?
