@@ -60,7 +60,7 @@ class GetTags
         );
     }
 
-    public function jsonResponse(array $tags, ActionRequest $request): array
+    public function jsonResponse(Collection | LengthAwarePaginator $tags, ActionRequest $request): array
     {
         $message = count($tags) . ' tags ';
         $message .= $request->search_term ? 'found' : 'fetched';
