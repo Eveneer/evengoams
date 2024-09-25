@@ -45,7 +45,7 @@ class VendorFactory extends Factory
         return [
             'name' => fake()->company(),
             'type' => fake()->randomElement(VendorTypesEnum::getValues()),
-            'tag_ids' => $tags,
+            'tags' => $tags,
             'contacts' => $contacts
         ];
     }

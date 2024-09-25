@@ -30,9 +30,9 @@ class UpdateVendor
     {
         $vendor = Vendor::findOrFail($id);
 
-        if (isset($params['tag_ids'])) {
-            $tag_ids = CreateTags::run($params['tag_ids']);
-            unset($params['tag_ids']);
+        if (isset($params['tags'])) {
+            $tag_ids = CreateTags::run($params['tags']);
+            unset($params['tags']);
             $vendor->tags()->sync($tag_ids);
         }
 
@@ -47,8 +47,8 @@ class UpdateVendor
             'id' => ['required', 'exists:vendors,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'type' => ['sometimes', 'in:' . implode(',', VendorTypesEnum::asArray())],
-            'tag_ids' => ['sometimes', 'nullable', 'array'],
-            'tag_ids.*' => ['exists:tags,id'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'min:3'],
             'contacts' => ['nullable', 'array'],
             'contacts.*.name' => ['nullable', 'string'],
             'contacts.*.phone' => ['nullable', 'string'],

@@ -31,10 +31,6 @@ class Transaction extends Model
         'is_last',
     ];
 
-    protected $casts = [
-        'tag_ids' => 'array',
-    ];
-
     protected $appends = [
         'type',
         'from',

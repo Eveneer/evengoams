@@ -28,9 +28,8 @@ class CreateVendor
 
     public function handle(array $params): Vendor
     {
-        $tag_ids = $params['tag_ids'];
-        unset($params['tag_ids']);
-        $tag_ids = CreateTags::run($tag_ids);
+        $tag_ids = CreateTags::run($params['tags']);
+        unset($params['tags']);
         $vendor = Vendor::create($params);
         $vendor->tags()->sync($tag_ids);
 
@@ -42,7 +41,8 @@ class CreateVendor
         return [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'in:' . implode(',', VendorTypesEnum::asArray())],
-            'tag_ids' => ['required', 'array'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'min:3'],
             'contacts' => ['nullable', 'array'],
             'contacts.*.name' => ['nullable', 'string'],
             'contacts.*.phone' => ['nullable', 'string'],

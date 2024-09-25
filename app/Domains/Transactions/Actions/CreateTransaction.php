@@ -66,6 +66,7 @@ class CreateTransaction
             'toable_id' => ['required', 'uuid'],
             'note' => ['nullable', 'string'],
             'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'min:3'],
         ];
     }
 

@@ -71,7 +71,8 @@ class UpdateTransaction
             ],
             'toable_id' => ['required', 'uuid'],
             'note' => ['sometimes', 'nullable', 'string'],
-            'tags' => ['sometimes', 'nullable', 'json'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'min:3'],
         ];
     }
 

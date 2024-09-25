@@ -46,7 +46,7 @@ class TransactionSeeder extends Seeder
                     'toable_type' => $toable,
                     'toable_id' => $this->getSingleEntityId($entities, $toable),
                     'note' => rand(0, 9) < 5 ? 'Some transaction' : null,
-                    'tag_ids' => $this->getRandomTags($tags),
+                    'tags' => $this->getRandomTags($tags),
                 ]);
             }
         }
